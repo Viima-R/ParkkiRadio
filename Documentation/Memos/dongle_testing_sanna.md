@@ -1,6 +1,6 @@
 Testing done on Feb 1st.
 
-I did some testing with an RTL dongle that I already owned. I was near the window on the sixth floor. There was a small parking lot with 5-6 cars below the window. Some cars left or arrived to the parking lot or just dropped people off.
+I did some testing with an RTL dongle that I already owned. I was near the window on the sixth floor. There was a small parking lot with 5-6 cars below the window. Some cars left or arrived to the parking lot or just dropped people off, but many cars had probably been there for a long time and were not emitting signals during the time when I was doing the testing.
 
 I ran the rtl-433 program for a bit over 2 hours and captured more than 1200 signals. 336 signals were marked "TPMS" and others were weather sensors etc.
 
@@ -21,6 +21,8 @@ Some of my findings:
 - based on the ids, one car was present for the whole 2 hours and in that time it sent about 280 signals, approximately two signals every minute
 
 
-Later I did more testing next to a window where there was a street below. I didn't get a signal from most cars.
+Later I did more testing next to a window where there was a street below. I didn't get a signal from most cars. 
 
+Conclusion: Capturing the signals was not a problem at all, because the signal seems to travel well at least in a clear weather, and also being behind a window does not affect it. The problem is the timing: how often does the car send the signal. 
 
+TODO: I could look more into the pattern of how often the signals were sent from the Toyota that sent them for the full 2 hours.
