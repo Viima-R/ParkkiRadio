@@ -8,4 +8,7 @@ Good info on interpreting what the sensor sends, he also did testing similiar to
 
 https://r-c-y.net/posts/tpms/
 
-Decoding the messages the sensors send.
+Decoding the messages the sensors send.  
+
+For rtl-433 use:  
+https://github.com/merbanan/rtl_433
