@@ -10,6 +10,10 @@ CREATE TABLE spot
   ,auto_id	VARCHAR(10)  FOREIGN KEY
   );
 
+CREATE TABLE tyre
+  (tyre_id VARCHAR(10)  PRIMARY KEY
+  9;
+
 
 
 INSERT INTO auto
@@ -19,4 +23,7 @@ VALUES
 
 INSERT INTO spot
 (spot_id, auto_id)
+VALUES
+
+INSERT INTO tyre
 VALUES
