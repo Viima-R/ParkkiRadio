@@ -4,7 +4,7 @@ I used the jq program to extract the ID from the JSON output of the rtl-433. The
 
 ``rtl_433 -F json | jq -r --unbuffered 'select(has("type")) | select(.type=="TPMS") | .id' | tee -a filename.txt``
 
-Below is a code that uses a ready-made json instead of the output from the rtl 433.
+Below is a code that uses a ready-made json instead of the output from the rtl 433. The test.json is at least somewhat "anonymized" and the IDs are not the actual IDs that were captured.
 
 ``jq -r --unbuffered 'select(has("type")) | select(.type=="TPMS") | .id'  test.json | tee -a filename.txt``
 
