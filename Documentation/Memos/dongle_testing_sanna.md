@@ -1,3 +1,22 @@
+Feb 13
+
+I used the jq program to extract the ID from the JSON output of the rtl-433. The command might need some more fine-tuning, and also probably filtering because the same tyre might send more than one signal in a row.
+
+``rtl_433 -F json | jq -r --unbuffered 'select(has("type")) | select(.type=="TPMS") | .id' | tee -a filename.txt``
+
+Below is a code that uses a ready-made json instead of the output from the rtl 433.
+
+``jq -r --unbuffered 'select(has("type")) | select(.type=="TPMS") | .id'  test.json | tee -a filename.txt``
+
+Sources:  
+https://jqlang.org/manual/  
+https://www.baeldung.com/linux/jq-command-json  
+https://earthly.dev/blog/jq-select/
+
+
+
+-----------------------------
+
 Testing done on Feb 1st.
 
 I did some testing with an RTL dongle that I already owned. I was near the window on the sixth floor. There was a small parking lot with 5-6 cars below the window. Some cars left or arrived to the parking lot or just dropped people off, but many cars had probably been there for a long time and were not emitting signals during the time when I was doing the testing.
