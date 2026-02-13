@@ -1,6 +1,6 @@
 # Weekly reports  
 
-# Week 7 (first week of report)  
+# Week 7 (first week of reporting)  
 
 We had a meeting with our project tutor, Harto Holmström. Meeting was a quick run-through of our project plan; weekly goals, considered problems and ideas how to solve them.  
 
