@@ -1,0 +1,59 @@
+{
+  "time": "2026-02-11 16:34:36",
+  "model": "Hyundai-VDO",
+  "type": "TPMS",
+  "id": "a2e70fb7",
+  "state": 34,
+  "flags": 0,
+  "repeat": 8,
+  "pressure_kPa": 240.625,
+  "temperature_C": 6,
+  "maybe_battery": 55,
+  "mic": "CRC"
+}
+{
+  "time": "2026-02-11 16:40:08",
+  "model": "Schrader",
+  "type": "TPMS",
+  "flags": "26",
+  "id": "22A74C6",
+  "pressure_kPa": 295,
+  "temperature_C": -2,
+  "mic": "CRC"
+}
+{
+  "time": "2026-02-11 16:40:08",
+  "model": "Ford",
+  "type": "TPMS",
+  "id": "67580f19",
+  "pressure_PSI": 34.25,
+  "moving": 0,
+  "learn": 0,
+  "code": "80a44b",
+  "unknown": "4c",
+  "unknown_3": "3",
+  "mic": "CHECKSUM"
+}
+{
+  "time": "2026-02-11 16:42:12",
+  "model": "Renault",
+  "type": "TPMS",
+  "id": "2e061f",
+  "flags": "36",
+  "pressure_kPa": 249.75,
+  "temperature_C": -1,
+  "mic": "CRC"
+}
+{
+  "time": "2026-02-11 16:43:07",
+  "model": "Hyundai-VDO",
+  "type": "TPMS",
+  "id": "82990fb4",
+  "state": 35,
+  "flags": 0,
+  "repeat": 9,
+  "pressure_kPa": 233.75,
+  "temperature_C": -1,
+  "maybe_battery": 33,
+  "mic": "CRC"
+}
