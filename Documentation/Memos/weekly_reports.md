@@ -8,6 +8,7 @@ We had a meeting with our project tutor, Harto Holmström. Meeting was a quick r
 
 - documentation in GitHub
 - setting up Teams for quick chat and meetings
+- unspoken contract of weekly meetings, mostly on Teams to check up progress, and next week a hands-on contact meeting for a field test/research
 - finalaze the on going weeks goals
 - planning next weeks agenda (getting a car and trying to activate our TMPS sensors)
   
@@ -30,3 +31,5 @@ We had a meeting with our project tutor, Harto Holmström. Meeting was a quick r
 - Making a script for saving wanted data
 
 # Week 8
+
+## Field reserch 20.02. at 13.30
