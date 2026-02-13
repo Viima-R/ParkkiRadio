@@ -1,5 +1,7 @@
 Here is a frame work for the database:
 
+$sqlite3 DatabaseName.db  
+
 CREATE TABLE auto  
   (auto_id		VARCHAR(10)  PRIMARY KEY  
   ,tyre_id		VARCHAR(10)  NOT NULL  
