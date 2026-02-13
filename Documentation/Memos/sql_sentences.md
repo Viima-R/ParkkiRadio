@@ -1,6 +1,6 @@
 Here is a frame work for the database:
 
-$sqlite3 DatabaseName.db  
+$sqlite3
 
 CREATE TABLE auto  
   (auto_id		VARCHAR(10)  PRIMARY KEY  
