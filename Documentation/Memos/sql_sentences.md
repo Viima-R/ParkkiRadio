@@ -1,4 +1,4 @@
-Here is a frame work for the database:
+Here is a framework for the database:
 
 $sqlite3
 
