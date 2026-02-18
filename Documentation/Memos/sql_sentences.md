@@ -35,11 +35,11 @@ VALUES
 
 ----------------------------------------
 
-DELETE FROM auto
+DELETE FROM auto  
 WHERE auto_id = 'known3';
 
-DELETE FROM spot
+DELETE FROM spot  
 WHERE spot_id = 'spot32';
 
-DELETE FROM tyre
+DELETE FROM tyre  
 WHERE tyre_id = 'oj543as';
