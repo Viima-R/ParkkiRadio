@@ -18,7 +18,7 @@ CREATE TABLE tyre
   (tyre_id VARCHAR(10)  PRIMARY KEY  
   );
 
-
+---------------------------------------
 
 INSERT INTO auto  
 (auto_id, tyre_id)  
@@ -32,3 +32,14 @@ VALUES
 
 INSERT INTO tyre  
 VALUES
+
+----------------------------------------
+
+DELETE FROM auto
+WHERE auto_id = 'known3';
+
+DELETE FROM spot
+WHERE spot_id = 'spot32';
+
+DELETE FROM tyre
+WHERE tyre_id = 'oj543as';
