@@ -14,7 +14,7 @@ https://earthly.dev/blog/jq-select/
 
 ### A simple script for adding a new ID into the database
 
-Remember to give yourself execute rights for the script: ``chmod u+x name_of_script.sh``
+Remember to give yourself execute rights for the script: ``chmod u+x name_of_script.sh``  
 Run the script: ./name_of_script.sh
 
 addid.sh   
