@@ -45,6 +45,16 @@ echo "Poistetaan tietokannasta test.db: DELETE FROM tbl1 WHERE id = (\"$id\");"
 sqlite3 test.db "delete from tbl1 where id = (\"$id\");"
 ```
 
+### A script for printing the the contend of the database
+
+printids.sh
+```
+#! /usr/bin/bash
+
+echo "Printataan tulos komennosta SELECT * FROM tbl1"
+sqlite3 test.db "SELECT * FROM tbl1;"
+```
+
 Source: https://stackoverflow.com/questions/4152321/how-to-insert-into-sqlite-database-using-bash
 
 
