@@ -45,7 +45,7 @@ echo "Poistetaan tietokannasta test.db: DELETE FROM tbl1 WHERE id = (\"$id\");"
 sqlite3 test.db "delete from tbl1 where id = (\"$id\");"
 ```
 
-### A script for printing the the contend of the database
+### A script for printing out the contents of the database
 
 printids.sh
 ```
