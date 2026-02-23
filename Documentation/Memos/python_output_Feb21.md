@@ -1,7 +1,7 @@
 Found 1 new IDs in file  
 Sensed ID from file: g2c2e1b2  
 Started timer for new car g2c2e1b2  
-Overtime car ID g2c2e1b2 not seen again in 2h 30min  *<- Overtime välittömästi*
+Overtime car ID g2c2e1b2 not seen again in 2h 30min  
 
 Found 2 new IDs in file  
 Sensed ID from file: eg2045  
