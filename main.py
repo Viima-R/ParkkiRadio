@@ -2,22 +2,23 @@ import sqlite3
 import threading
 import time
 
-'''
-HUOM! Keskeneräinen puuttuu vielä miten id_value saadaan inputattua.
-'''
 
-
-
+#Configuration
 db_name = "test.db" #database name
+file_name = "tpms.txt" #file where new IDs are saved
 
-time_amount = 5 # 2h30min in seconds(9000)
+time_amount = 15 # 2h30min in seconds(9000)
+pass_window = 10 # seconds
+
+#Globals
 
 active_timers = {} #dictionary for parked cars timers
-
 overtime = False #This boolean is used to determine what to do when timer goes over no fucntionality yet
+last_seen = {} #dictionary to track last detection time
 
-file_name = "tpms.txt"
+lock = threading.Lock() #Protect shared dictionaries
 
+#DB Check
 
 def id_in_db(id_value): #function for determining if detected ID in DB
     conn = sqlite3.connect(db_name)     #Connection
@@ -27,41 +28,66 @@ def id_in_db(id_value): #function for determining if detected ID in DB
     conn.close() #close connection
     return result is not None #function returns true if ID in db and false if ID not in DB
 
+#Parking overtime action
 
-def overtime_reached(id_value): #threading timer calls this function if timer goes over thus changing the overtime variable to true. Deletes the timer from dictionary
-    global overtime #specifies the global variable
-    print(f"Overtime car ID {id_value} not seen again in 2h 30min")
-    overtime = True #changes it to true
-    active_timers.pop(id_value, None) #deletion
+def overtime_reached(carId): #threading timer calls this function if timer goes over thus changing the overtime variable to true. Deletes the timer from dictionary
+    global overtime
 
-#DELETE LATER used for testing
-'''
-def get_id_from_sensor(): #function made for testing my test DB has IDs A123 and B123
-    sample_ids = ["A123", "D123", "C123", "B123"]
-    for id_value in sample_ids:
-        yield id_value
-        time.sleep(5)
-'''
+    with lock:
+        print(f"Overtime car ID {carId} not seen again in 2h 30min")
+        overtime = True
+        active_timers.pop(carId, None)
 
+#Timer management
 
-def start_or_cancel_timer(id_value): #function to start timer when new car is detected and delete when it leaves
+def start_or_cancel_timer(carId): #function to start timer when new car is detected and delete when it leaves
+    with lock:
+        # If a timer already exists for this ID you can assume the car is leaving parking and can delete timer
+        if carId in active_timers: #is id in active timers dictionary
+            active_timers[carId].cancel() #cancel timer
+            active_timers.pop(carId, None) #remove entry from dictionary
+            print(f"Cancelled timer, car: {carId} left parking. Timer removed")
+            return #exits the functions without adding another timer
 
-    # If a timer already exists for this ID you can assume the car is leaving parking and can delete timer
-    if id_value in active_timers: #is id in active timers dictionary
-        active_timers[id_value].cancel() #cancel timer
-        active_timers.pop(id_value, None) #remove entry from dictionary
-        print(f"Cancelled {id_value} left parking. Timer removed")
-        return #exits the functions without adding another timer
+        # If not then start a new timer
+        timer = threading.Timer(time_amount, overtime_reached, args=[carId])  #creating a new timer
+        active_timers[carId] = timer #new entry to dictionary for the ID
+        timer.start() #starts the timer
+        print(f"Started timer for new car: {carId}")
 
-    # If not then start a new timer
-    timer = threading.Timer(time_amount, overtime_reached, args=[id_value])  #creating a new timer
-    active_timers[id_value] = timer #new entry to dictionary for the ID
-    timer.start() #starts the timer
-    print(f"Started timer for new car {id_value}")
+#Filtering multiple readings from one car
+
+def clear_last_seen(): #Clears last seen dictionary after set passing window
+    now = time.time()
+    to_delete = []
+    with lock:
+        for carId, timestamp in last_seen.items():
+            if now - timestamp > pass_window:
+                to_delete.append(carId)
+
+        for carId in to_delete:
+            del last_seen[carId]
+
+def group_ids(id_value):
+    carId = id_value[:3] #Takes the first 3 digits from the ID and assumes it is the same car
+    now = time.time()
+
+    clear_last_seen()
+
+    with lock:
+        if carId in last_seen:
+            if now - last_seen[carId] < pass_window:
+                print(f"Ignored {carId} multiple TPMS from one car detected")
+                return
+    
+    last_seen[carId] = now
+    start_or_cancel_timer(carId)
+
+#File checker
 
 def check_for_new_id(): #function to continuously check the tpms text file for additions
     print("a")
-    while True: # repeats endlessly, takes a 1s(voi muuttaa jos on liian raskas) break inbetween can change if its too taxing
+    while True: # repeats endlessly every 1 seconds
         try:
             with open(file_name, "r") as f: #opens the ID file in read mode
                 lines = f.readlines()       #creates list of lines
@@ -73,37 +99,21 @@ def check_for_new_id(): #function to continuously check the tpms text file for a
                     if not id_value:
                         continue
 
-                    print(f"Sensed ID from file: {id_value}")
+                    print(f"Found ID from file: {id_value}")
 
                     if not id_in_db(id_value):
-                        start_or_cancel_timer(id_value)
+                        group_ids(id_value)
                     else:
                         print("Known ID, ignoring.")
 
-                # Clear the file after processing
-                open(file_name, "w").close()
+                open(file_name, "w").close() #Clears file
 
-        except FileNotFoundError:
-            # File might not exist yet — that's fine
+        except FileNotFoundError: #If file doesn't exist
             pass
 
         time.sleep(1)  # check every second
 
+#main
 
-#Main loop for testing
-'''
-for id_value in get_id_from_sensor(): #Goes through the values in the testing function and sees if they're in the db or not
-    print(f"Captured ID: {id_value}")
-
-    if not id_in_db(id_value):
-        start_or_cancel_timer(id_value)
-    else:
-        print(f"Known car, ignoring")
-
-    print(f"Overtime value: {overtime}")
-    print(f"Active timers: {list(active_timers.keys())}")
-    print("*" * 40)
-    '''
-
-#main program that runs the check_for_new_id function that should stay running
-check_for_new_id()
+if __name__ == "__main__":
+    check_for_new_id()
