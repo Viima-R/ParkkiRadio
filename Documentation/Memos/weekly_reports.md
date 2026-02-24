@@ -52,4 +52,4 @@ Second meeting with our tutor teacher for cathing up. Realezing that the product
 ## TO/DO
 
 - Thinking about the end product: trigger alarm
-- Creating a emulating program to test the program
+- Creating an emulating program to test the program
