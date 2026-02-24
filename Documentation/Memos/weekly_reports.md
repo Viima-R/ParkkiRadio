@@ -32,4 +32,12 @@ We had a meeting with our project tutor, Harto Holmström. Meeting was a quick r
 
 # Week 8
 
-## Field reserch 20.02. at 13.30
+## Field reserch 20.02. at 13.30 // Cancelled
+
+
+# Week 9
+
+Second meeting with our tutor teacher for cathing up. Realezing that the product works in a way, but the problem practical usage percist.
+
+
+## Field research 
