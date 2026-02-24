@@ -48,3 +48,8 @@ Second meeting with our tutor teacher for cathing up. Realezing that the product
 ## Field research 
 
 - proposals for venues: Tripla parking, Lidl parking in Teollisuuskatu, Lidl in 4. linja...
+
+## TO/DO
+
+- Thinking about the end product: trigger alarm
+- Creating a emulating program to test the program
