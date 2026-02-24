@@ -32,8 +32,13 @@ We had a meeting with our project tutor, Harto Holmström. Meeting was a quick r
 
 # Week 8
 
-## Field reserch 20.02. at 13.30 // Cancelled
+## Field research 20.02. at 13.30 // Cancelled
 
+## DONE
+
+- Script tweaks
+- SQL tweaks
+- Code enhancment
 
 # Week 9
 
