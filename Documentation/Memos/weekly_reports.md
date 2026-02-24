@@ -42,7 +42,9 @@ We had a meeting with our project tutor, Harto Holmström. Meeting was a quick r
 
 # Week 9
 
-Second meeting with our tutor teacher for cathing up. Realezing that the product works in a way, but the problem practical usage percist.
+Second meeting with our tutor teacher for cathing up. Realezing that the product works in a way, but the problem for practical usage percist.
 
 
 ## Field research 
+
+- proposals for venues: Tripla parking, Lidl parking in Teollisuuskatu, Lidl in 4. linja...
