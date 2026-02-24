@@ -1,3 +1,5 @@
+NOTE: The IDs are "anonymized" which is why they don't all look like hexadecimal numbers anymore.
+
 Found 1 new IDs in file  
 Sensed ID from file: g2c2e1b2  
 Started timer for new car g2c2e1b2  
