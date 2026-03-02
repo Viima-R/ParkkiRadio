@@ -45,7 +45,7 @@ We had a meeting with our project tutor, Harto Holmström. Meeting was a quick r
 Second meeting with our tutor teacher for cathing up. Realezing that the product works in a way, but the problem for practical usage percist.
 
 
-## Field research 26.2.
+## Field research 26.2. // *Rescheduled*
 
 - Lidl in 4. linja
 - General scanning of tyres/cars
@@ -56,3 +56,33 @@ Second meeting with our tutor teacher for cathing up. Realezing that the product
 
 - Thinking about the end product: trigger alarm
 - Creating an emulating program to test the program
+
+
+# Week 10
+
+This week we started with a field experiment. We also have a meeting with our tutor to discuss our findings.
+
+## Field research 2.3.
+
+Testing hardware:
+- Two computers; linux and mac
+- Two receiver dongles
+- One Mercedes-Benz
+
+Testing area:
+- Lidl basement parking in Kallio, Helsinki
+- Merihaka parking hall
+
+Tests:
+- Identifying the tires in our test car
+- Noting how parked cars usually don't send data
+- Three sets of testing the length, which the transmitter captures the sent data from our test car
+
+Conclusions:
+- The indentification of a tyre set is supposedly easy in a heavily limited? space
+- The strength of the transmitter is about 40 to 45 meters in a blocked? space, but without any disturbance in the line of transmission
+- More brainstorming needed to find a suitable way to use the 'product'
+
+TO/DO
+- Measurementing the potential strength of the receiver/dongle
+
