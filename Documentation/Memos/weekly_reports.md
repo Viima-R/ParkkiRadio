@@ -64,6 +64,9 @@ This week we started with a field experiment. We also have a meeting with our tu
 
 ## Field research 2.3.
 
+![IMG_5494](https://github.com/user-attachments/assets/f45a11f6-2386-4961-975d-71572a77806d)  
+Merihaka test enviroment
+
 Testing hardware:
 - Two computers; linux and mac
 - Two receiver dongles
