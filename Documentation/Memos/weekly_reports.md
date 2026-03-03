@@ -15,7 +15,7 @@ We had a meeting with our project tutor, Harto Holmström. Meeting was a quick r
 ## List of aquired hardware  
 
 - One additional rtl-dongle (two in total)
-- Four TMPS sensors
+- Four TPMS sensors
 
 ## Done
 
