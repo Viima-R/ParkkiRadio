@@ -88,4 +88,8 @@ Conclusions:
 
 TO/DO
 - Measurementing the potential strength of the receiver/dongle
+##
 
+## TO/DO
+
+-
