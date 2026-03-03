@@ -74,7 +74,7 @@ Testing hardware:
 
 Testing area:
 - Lidl basement parking in Kallio, Helsinki
-- Merihaka parking hall
+- Merihaka parking hall, semi outside area, but surrounded by heavy concrete walls, area about 60x60 meters
 
 Tests:
 - Identifying the tires in our test car
@@ -82,14 +82,22 @@ Tests:
 - Three sets of testing the length, which the transmitter captures the sent data from our test car
 
 Conclusions:
-- The indentification of a tyre set is supposedly easy in a heavily limited? space
-- The strength of the transmitter is about 40 to 45 meters in a blocked? space, but without any disturbance in the line of transmission
+- The indentification of a tyre set is supposedly easy in a heavily controlled space
+- The strength of the transmitter is about 40 to 45 meters in a walled space, but without any disturbance in the line of transmission
 - More brainstorming needed to find a suitable way to use the 'product'
 
 TO/DO
 - Measurementing the potential strength of the receiver/dongle
-##
+
+## Ideas going forward
+
+- Application for use, maybe just a web application
+- An application for parking halls, measuring traffic on a specific spot
+- A database, MQTT, CSC for linux virtual sevice (6 months), pouta, a cloud server, lambstack?  
+[csc pouta](https://docs.csc.fi/cloud/pouta/launch-vm-from-web-gui/)  
 
 ## TO/DO
 
--
+- Creating a virtual server with cPouta/ePouta
+- Ponder with MQTT
+- Creating a webpage...
