@@ -101,3 +101,10 @@ TO/DO
 - Creating a virtual server with cPouta/ePouta
 - Ponder with MQTT
 - Creating a webpage...
+
+# Week 11
+
+We've had a week of research to search a bit the direction for the project. Now, the week starts with a meeting with our tutor.
+
+
+## TO/DO
