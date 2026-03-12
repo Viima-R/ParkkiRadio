@@ -93,3 +93,6 @@ To allow the Mosquitto to be the autheticator, change the permissions and the ow
 - sudo chmod 600 /etc/mosquitto/passwd  
 - sudo chown mosquitto:mosquitto /etc/mosquitto/passwd  
 
+In the end the listening/sending messages change to be like this:
+- mosquitto_sub -h localhost -t "test/topic" -u tpms_user -P your_password
+- mosquitto_pub -h localhost -t "test/topic" -m "hello world" -u tpms_user -P your_password
