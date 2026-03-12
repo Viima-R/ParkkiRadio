@@ -81,4 +81,15 @@ To establish a listen configure mosquitto.conf -file for example with the next i
 - persistence true  // Ensures saving the data in case of a crash
 - persistence_location /var/lib/mosquitto/
 
-# Still needs to be secure... tbc
+To set up a username and a password the first time:  
+- sudo mosquitto_passwd -c /etc/mosquitto/passwd your_username
+
+Other users without the "-c":  
+- sudo mosquitto_passwd /etc/mosquitto/passwd your_username  
+
+Usernames and hashed passwords are save in /etc/mosquitto/passwd
+
+To allow the Mosquitto to be the autheticator, change the permissions and the owner:  
+- sudo chmod 600 /etc/mosquitto/passwd  
+- sudo chown mosquitto:mosquitto /etc/mosquitto/passwd  
+
