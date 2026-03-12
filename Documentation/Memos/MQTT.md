@@ -22,3 +22,25 @@ allow_anonymous true
 Sources:
 
 https://github.com/malinjade/plantproject
+
+# In practice
+
+## Linux (Debian 12) 
+To install a Mosquitto Broker:  
+- sudo apt install mosquitto mosquitto-clients
+- sudo systemctl start mosquitto
+- sudo systemctl status mosquitto
+
+To test:
+
+Listener (computer1):
+- mosquitto_sub -h localhost -t test/topic
+
+Publisher (computer2):
+- mosquitto_pub -h localhost -t test/topic -m "Hello MQTT"
+
+Should show the message on computer1.  
+
+Mosquitto listens port TCP 1883.  
+To test:  
+- sudo ss -tulpn | grep 1883  
