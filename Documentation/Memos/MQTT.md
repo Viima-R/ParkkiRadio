@@ -60,4 +60,13 @@ Then restart Mosquitto:
 - brew services restart mosquitto  
 And it should be up and running.
 
+To test:
+
+Listener (terminal1):
+- mosquitto_sub -h localhost -t test/topic
+
+Publisher (terminal2):
+- mosquitto_pub -h localhost -t test/topic -m "Hello MQTT"
+
+Should show the message on terminal1.  
 
