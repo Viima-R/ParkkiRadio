@@ -25,7 +25,9 @@ https://github.com/malinjade/plantproject
 
 # In practice
 
-## Linux (Debian 12) 
+## Setup
+
+### Linux (Debian 12) 
 To install a Mosquitto Broker:  
 - sudo apt install mosquitto mosquitto-clients
 - sudo systemctl start mosquitto
@@ -46,7 +48,7 @@ To test:
 - sudo ss -tulpn | grep 1883
 
 
-## iOS
+### iOS
 To install a Mosquitto Broker:
 - brew install mosquitto
 - brew services restart mosquitto
@@ -69,5 +71,14 @@ Publisher (terminal2):
 - mosquitto_pub -h localhost -t test/topic -m "Hello MQTT"
 
 Should show the message on terminal1.  
+
+## To use
+
+To establish a listen configure mosquitto.conf -file for example with the next information:  
+- listener 1883
+- allow_anonymous false
+- password_file /etc/mosquitto/passwd  // Hashed built-in utility
+- persistence true  // Ensures saving the data in case of a crash
+- persistence_location /var/lib/mosquitto/
 
 # Still needs to be secure... tbc
