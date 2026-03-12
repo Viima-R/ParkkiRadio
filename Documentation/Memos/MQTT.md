@@ -70,3 +70,4 @@ Publisher (terminal2):
 
 Should show the message on terminal1.  
 
+# Still needs to be secure... tbc
