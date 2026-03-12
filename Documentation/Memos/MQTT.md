@@ -43,4 +43,21 @@ Should show the message on computer1.
 
 Mosquitto listens port TCP 1883.  
 To test:  
-- sudo ss -tulpn | grep 1883  
+- sudo ss -tulpn | grep 1883
+
+
+## iOS
+To install a Mosquitto Broker:
+- brew install mosquitto
+- brew services restart mosquitto
+
+If a problem occurs, the conf -file might be missing.  
+Go to:  
+- cd /opt/homebrew/etc/mosquitto  
+Then:  
+- cp mosquitto.conf.example mosquitto.conf  
+Then restart Mosquitto:  
+- brew services restart mosquitto  
+And it should be up and running.
+
+
