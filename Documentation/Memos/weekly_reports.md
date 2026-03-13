@@ -125,7 +125,7 @@ Team meating on friday to check progress:
 
 # Week 12
 
-We are pacing up and checking progress two times this week, on tuesday and friday.
+We are pacing up and checking progress twice this week, on tuesday and friday.
 
 
 ## TO/DO
