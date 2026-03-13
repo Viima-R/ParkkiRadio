@@ -14,7 +14,7 @@ käsittelyä.
 ## WebApi
 Django vai joku muu?
 
-##V erkkosivu
+## Verkkosivu
 Frontend 
 
 ## Palvelin
