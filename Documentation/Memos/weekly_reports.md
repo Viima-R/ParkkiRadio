@@ -120,7 +120,7 @@ Team meating on friday to check progress:
 - Database server to run
 - MQTT to automatically write in to the database
 - Setting up Django
-- Webpage tbc
+- Webpage tbc  
 
 
 # Week 12
