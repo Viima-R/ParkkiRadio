@@ -3,7 +3,7 @@
 ## Softaradio
 Havaitsee TPMS sensorit
 
-## IOT (raspberry Pi)  
+## IoT (raspberry Pi)  
 Heittää tietoja eteenpäin
 
 ## MQTT
