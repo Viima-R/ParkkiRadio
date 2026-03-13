@@ -121,7 +121,7 @@ Team meating on friday to check progress:
 - MQTT to automatically write in to the database
 - Setting up Django
 - Webpage tbc  
-![IMG 6245624](Documentation/Memos/Screenshot 2026-03-13 at 11.33.53.png)
+![Documentation/Memos/Screenshot 2026-03-13 at 11.33.53.png](https://github.com/Viima-R/ParkkiRadio/blob/main/Documentation/Memos/Screenshot%202026-03-13%20at%2011.33.53.png)
 
 # Week 12
 
