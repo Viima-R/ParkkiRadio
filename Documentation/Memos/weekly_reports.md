@@ -104,7 +104,17 @@ TO/DO
 
 # Week 11
 
-We've had a week of research to search a bit the direction for the project. Now, the week starts with a meeting with our tutor.
+We've had a week of research to search a bit the direction for the project. Now, the week starts with a meeting with our tutor. 
+Processes with the server, MQTT and webpage to be continued.
+
+Team meating on friday to check progress.
+
+## TO/DO
+
+- 
+
+
+# Week 12
 
 
 ## TO/DO
