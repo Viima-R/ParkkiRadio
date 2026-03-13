@@ -122,7 +122,6 @@ Team meating on friday to check progress:
 - Setting up Django
 - Webpage tbc
 
-
 # Week 12
 
 We are pacing up and checking progress twice this week, on tuesday and friday.
