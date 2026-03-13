@@ -17,7 +17,7 @@ käsittelyä.
 Python ohjelma, joka hoitaa ajastimet yms.
 
 ## WebApi
-Django vai joku muu?
+Django, automaatio, joka tarkistaa IDt ja tekee tarvittavat.
 
 ## Verkkosivu
 Frontend 
