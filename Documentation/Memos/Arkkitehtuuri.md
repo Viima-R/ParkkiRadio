@@ -1,7 +1,7 @@
 ## Softaradio
 Havaitsee TPMS sensorit
 
-##M QTT
+## MQTT
 Toimittaa tiedon
 
 ## Python backend
