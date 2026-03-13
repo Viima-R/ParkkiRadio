@@ -107,11 +107,20 @@ TO/DO
 We've had a week of research to search a bit the direction for the project. Now, the week starts with a meeting with our tutor. 
 Processes with the server, MQTT and webpage to be continued.
 
-Team meating on friday to check progress.
+Team meating on friday to check progress:
+
+- Servers are coming up
+- MQTT is almost in order
+- making the architecture a bit more clearer
+- django to be an intermediate between the servers and webpage
+- Webpage has a solid default page
 
 ## TO/DO
 
-- 
+- Database server to run
+- MQTT to automatically write in to the database
+- Setting up Django
+- Webpage tbc
 
 
 # Week 12
