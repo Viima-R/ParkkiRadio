@@ -1,21 +1,21 @@
-##Softaradio
+## Softaradio
 Havaitsee TPMS sensorit
 
-##MQTT
+##M QTT
 Toimittaa tiedon
 
-##Python backend
+## Python backend
 Python ohjelma, joka hoitaa ajastimet yms.
 
-##Tietokanta
+## Tietokanta
 mistä löytyy esim: ID, ensin nähty, viimeksi nähty ja onko yliaika. Tämä on eri tietokanta kuin se, mistä tarkistetaan onko auto tunnettu, tämän tietokannan tarkoitus on helpottaa verkkosivulla näytettävän datan 
 käsittelyä.
 
-##WebApi
+## WebApi
 Django vai joku muu?
 
-##Verkkosivu
+##V erkkosivu
 Frontend 
 
-##Palvelin
+## Palvelin
 CSC cPouta(tai jokin muu, mutta cPouta toimii tässä projektissa) vai onprem?
