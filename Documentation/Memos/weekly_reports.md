@@ -93,7 +93,7 @@ TO/DO
 
 - Application for use, maybe just a web application
 - An application for parking halls, measuring traffic on a specific spot
-- A database, MQTT, CSC for linux virtual sevice (6 months), pouta, a cloud server, lambstack?  
+- A database, MQTT, CSC for linux virtual sevice (6 months), pouta, a cloud server, lampstack  
 [csc pouta](https://docs.csc.fi/cloud/pouta/launch-vm-from-web-gui/)  
 
 ## TO/DO
