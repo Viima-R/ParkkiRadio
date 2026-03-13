@@ -3,15 +3,18 @@
 ## Softaradio
 Havaitsee TPMS sensorit
 
+## IOT (raspberry Pi)  
+Heittää tietoja eteenpäin
+
 ## MQTT
 Toimittaa tiedon
-
-## Python backend
-Python ohjelma, joka hoitaa ajastimet yms.
 
 ## Tietokanta
 mistä löytyy esim: ID, ensin nähty, viimeksi nähty ja onko yliaika. Tämä on eri tietokanta kuin se, mistä tarkistetaan onko auto tunnettu, tämän tietokannan tarkoitus on helpottaa verkkosivulla näytettävän datan 
 käsittelyä.
+
+## Python backend
+Python ohjelma, joka hoitaa ajastimet yms.
 
 ## WebApi
 Django vai joku muu?
