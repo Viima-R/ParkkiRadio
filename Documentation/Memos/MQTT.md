@@ -122,17 +122,17 @@ def publish_tpms(sensor_id, pressure):
 
     client.publish(topic, json.dumps(payload))
 
-# Example loop
-while True:
-    publish_tpms("ABC123", 32.5)
+# Example loop  
+while True:  
+    publish_tpms("ABC123", 32.5)  
     time.sleep(5)
 
 ## For the "listener":
 
-import paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt  
 import json
 
-def on_message(client, userdata, msg):
+def on_message(client, userdata, msg):  
     data = json.loads(msg.payload.decode())
     
     sensor_id = data["sensor_id"]
