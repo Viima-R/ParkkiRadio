@@ -114,10 +114,10 @@ import paho.mqtt.client as mqtt
 from datetime import datetime
 
 # --- Database setup ---
-conn = sqlite3.connect("tpms.db")
+conn = sqlite3.connect("tpms.db")  
 cursor = conn.cursor()
 
-cursor.execute("""
+cursor.execute("""  
 CREATE TABLE IF NOT EXISTS sensors (
     id TEXT PRIMARY KEY,
     first_seen TEXT,
