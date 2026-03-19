@@ -1,8 +1,8 @@
-###Diagram for a database called parkkiradio
+### Diagram for a database called parkkiradio
 
 ![alt text](tietokanta-1.png)
 
-###Commands used
+### Commands used
 
 CREATE DATABASE parkkiradio;
 
@@ -12,7 +12,7 @@ CREATE TABLE permitted (tpms_id TEXT PRIMARY KEY, lot_number INT, location INT R
 
 CREATE TABLE timers (car_id TEXT PRIMARY KEY, location INT REFERENCES location(location_id) ON DELETE CASCADE, start_time TIMESTAMP DEFAULT NOW(), overtime BOOLEAN DEFAULT FALSE);
 
-###Command templates
+### Command templates
 
 INSERT INTO location (name, address) VALUES('', '');
 
