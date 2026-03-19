@@ -127,10 +127,10 @@ CREATE TABLE IF NOT EXISTS sensors (
 
 conn.commit()
 
-# --- MQTT callback ---
-def on_message(client, userdata, msg):
-    sensor_id = msg.payload.decode().strip()
-    now = datetime.utcnow().isoformat()
+# --- MQTT callback ---  
+def on_message(client, userdata, msg):  
+    sensor_id = msg.payload.decode().strip()  
+    now = datetime.utcnow().isoformat()  
 
     if not sensor_id:
         return
