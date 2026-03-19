@@ -107,7 +107,7 @@ rtl_433 -f 433.92M -F json \
 
 ## For the listener
 
-### !!Check in practise!!
+### !!Check in practise!! HALLUCINATION
 
 import sqlite3
 import paho.mqtt.client as mqtt
