@@ -118,11 +118,11 @@ conn = sqlite3.connect("tpms.db")
 cursor = conn.cursor()
 
 cursor.execute("""  
-CREATE TABLE IF NOT EXISTS sensors (
-    id TEXT PRIMARY KEY,
-    first_seen TEXT,
-    last_seen TEXT
-)
+CREATE TABLE IF NOT EXISTS sensors (  
+    id TEXT PRIMARY KEY,  
+    first_seen TEXT,  
+    last_seen TEXT  
+)  
 """)
 
 conn.commit()
