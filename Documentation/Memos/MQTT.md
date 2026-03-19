@@ -128,43 +128,43 @@ CREATE TABLE IF NOT EXISTS sensors (
 conn.commit()
 
 # --- MQTT callback ---  
-def on_message(client, userdata, msg):  
-    sensor_id = msg.payload.decode().strip()  
-    now = datetime.utcnow().isoformat()  
+    def on_message(client, userdata, msg):  
+        sensor_id = msg.payload.decode().strip()  
+        now = datetime.utcnow().isoformat()  
 
-    if not sensor_id:
-        return
+        if not sensor_id:
+            return
 
-    try:
-        # Try inserting new sensor
-        cursor.execute("""
-            INSERT INTO sensors (id, first_seen, last_seen)
-            VALUES (?, ?, ?)
-        """, (sensor_id, now, now))
+        try:
+            # Try inserting new sensor
+            cursor.execute("""
+                INSERT INTO sensors (id, first_seen, last_seen)
+                VALUES (?, ?, ?)
+            """, (sensor_id, now, now))
 
-        print(f"New sensor stored: {sensor_id}")
+            print(f"New sensor stored: {sensor_id}")
 
-    except sqlite3.IntegrityError:
-        # Already exists → update last_seen
-        cursor.execute("""
-            UPDATE sensors
-            SET last_seen = ?
-            WHERE id = ?
-        """, (now, sensor_id))
+        except sqlite3.IntegrityError:
+            # Already exists → update last_seen
+            cursor.execute("""
+                UPDATE sensors
+                SET last_seen = ?
+                WHERE id = ?
+            """, (now, sensor_id))
 
-        print(f"Updated sensor: {sensor_id}")
+            print(f"Updated sensor: {sensor_id}")
 
-    conn.commit()
+        conn.commit()
 
 # --- MQTT setup ---
-client = mqtt.Client()
-client.username_pw_set("USERNAME", "PASSWORD")
-client.connect("YOUR_SERVER_IP", 1883)
+client = mqtt.Client()  
+client.username_pw_set("USERNAME", "PASSWORD")  
+client.connect("YOUR_SERVER_IP", 1883)  
 
-client.subscribe("tpms/id")
-client.on_message = on_message
+client.subscribe("tpms/id")  
+client.on_message = on_message  
 
-print("Listening for TPMS IDs...")
-client.loop_forever()
+print("Listening for TPMS IDs...")  
+client.loop_forever()  
 
 
