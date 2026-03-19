@@ -106,7 +106,7 @@ sudo systemctl start mosquitto
 Publish:  
 mosquitto_pub -h <BROKER_IP> -t test/topic -m "message" -u tpms_user -P your_password
 
-Listen:
+Listen:  
 mosquitto_sub -h localhost -t test/topic -u tpms_user -P your_password
 
 ## Publish directly to Mosquitto
