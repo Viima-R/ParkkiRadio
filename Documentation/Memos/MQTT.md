@@ -109,6 +109,8 @@ rtl_433 -f 433.92M -F json \
 
 ### !!Check in practise!! HALLUCINATION
 
+</> Python
+
 import sqlite3  
 import paho.mqtt.client as mqtt  
 from datetime import datetime  
