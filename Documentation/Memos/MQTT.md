@@ -107,6 +107,64 @@ rtl_433 -f 433.92M -F json \
 
 ## For the listener
 
-- Check in practise -
+### !!Check in practise!!
+
+import sqlite3
+import paho.mqtt.client as mqtt
+from datetime import datetime
+
+# --- Database setup ---
+conn = sqlite3.connect("tpms.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS sensors (
+    id TEXT PRIMARY KEY,
+    first_seen TEXT,
+    last_seen TEXT
+)
+""")
+
+conn.commit()
+
+# --- MQTT callback ---
+def on_message(client, userdata, msg):
+    sensor_id = msg.payload.decode().strip()
+    now = datetime.utcnow().isoformat()
+
+    if not sensor_id:
+        return
+
+    try:
+        # Try inserting new sensor
+        cursor.execute("""
+            INSERT INTO sensors (id, first_seen, last_seen)
+            VALUES (?, ?, ?)
+        """, (sensor_id, now, now))
+
+        print(f"New sensor stored: {sensor_id}")
+
+    except sqlite3.IntegrityError:
+        # Already exists → update last_seen
+        cursor.execute("""
+            UPDATE sensors
+            SET last_seen = ?
+            WHERE id = ?
+        """, (now, sensor_id))
+
+        print(f"Updated sensor: {sensor_id}")
+
+    conn.commit()
+
+# --- MQTT setup ---
+client = mqtt.Client()
+client.username_pw_set("USERNAME", "PASSWORD")
+client.connect("YOUR_SERVER_IP", 1883)
+
+client.subscribe("tpms/id")
+client.on_message = on_message
+
+print("Listening for TPMS IDs...")
+client.loop_forever()
 
 
