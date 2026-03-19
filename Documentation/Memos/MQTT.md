@@ -109,9 +109,9 @@ rtl_433 -f 433.92M -F json \
 
 ### !!Check in practise!! HALLUCINATION
 
-import sqlite3
-import paho.mqtt.client as mqtt
-from datetime import datetime
+import sqlite3  
+import paho.mqtt.client as mqtt  
+from datetime import datetime  
 
 #### --- Database setup ---
 conn = sqlite3.connect("tpms.db")  
