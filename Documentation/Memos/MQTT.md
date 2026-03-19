@@ -113,7 +113,7 @@ import sqlite3
 import paho.mqtt.client as mqtt
 from datetime import datetime
 
-# --- Database setup ---
+#### --- Database setup ---
 conn = sqlite3.connect("tpms.db")  
 cursor = conn.cursor()
 
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS sensors (
 
 conn.commit()
 
-# --- MQTT callback ---  
+#### --- MQTT callback ---  
     def on_message(client, userdata, msg):  
         sensor_id = msg.payload.decode().strip()  
         now = datetime.utcnow().isoformat()  
@@ -156,7 +156,7 @@ conn.commit()
 
         conn.commit()
 
-# --- MQTT setup ---
+##### --- MQTT setup ---
 client = mqtt.Client()  
 client.username_pw_set("USERNAME", "PASSWORD")  
 client.connect("YOUR_SERVER_IP", 1883)  
