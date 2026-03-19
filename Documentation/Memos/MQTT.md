@@ -99,6 +99,16 @@ In the end the listening/sending messages change to be like this:
 
 # Using to transmit
 
+Both the server and the database have now Mosquitto, and the database is running as a broker and a listener. For now they are inactive, but to put them up:
+
+sudo systemctl start mosquitto
+
+Publish:  
+mosquitto_pub -h <BROKER_IP> -t test/topic -m "message" -u tpms_user -P your_password
+
+Listen:
+mosquitto_sub -h localhost -t test/topic -u tpms_user -P your_password
+
 ## Publish directly to Mosquitto
 
 rtl_433 -f 433.92M -F json \
