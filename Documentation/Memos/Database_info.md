@@ -1,12 +1,12 @@
 ### Diagram for a database called parkkiradio
 
-![alt text](tietokanta-1.png)
+![alt text](db_diag.png)
 
 ### Commands used
 
 CREATE DATABASE parkkiradio;
 
-CREATE TABLE location (location_id SERIAL PRIMARY KEY, name TEXT NOT NULL, address TEXT);
+CREATE TABLE location (location_id SERIAL PRIMARY KEY, name TEXT NOT NULL, address TEXT, time_limit INT);
 
 CREATE TABLE permitted (tpms_id TEXT PRIMARY KEY, lot_number INT, location INT REFERENCES location(location_id) ON DELETE CASCADE); 
 
