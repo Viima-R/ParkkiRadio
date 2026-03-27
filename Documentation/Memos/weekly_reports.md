@@ -127,5 +127,21 @@ Team meating on friday to check progress:
 
 We are pacing up and checking progress this week on thursday.
 
+# Week 13
+
+A team meeting on friday. We have worked on the tasks at hand:
+
+- MQTT readyness to the server and to the database.
+- Cron setting to the Database
+- Working on the role of Django
 
 ## TO/DO
+
+- MQTT in practise
+- Django
+- Cron
+- General cleanup
+
+# Week 14
+
+Meeting with the tutor after 3 weeks of working by ourselves, and a team meeting again on ???.
