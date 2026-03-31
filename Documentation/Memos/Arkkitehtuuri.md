@@ -7,7 +7,7 @@ Havaitsee TPMS sensorit
 Heittää tietoja eteenpäin
 
 ## MQTT
-Asennetaan Mosquitto välittäjäksi. Tietokanta toimii välittäjänä ja kuuntelijana, serveri lähettäjänä Raspberri Pilla. Lähetyksenä on renkaan ID ja Raspberry Pihin kohdistettu ID.
+Asennetaan Mosquitto välittäjäksi. Tietokanta toimii välittäjänä ja kuuntelijana, serveri lähettäjänä Raspberri Pilla. Lähetyksenä on renkaan ID ja Raspberry Pihin kohdistettu ID, jotka tallennetaan tietokantaan.
 
 ## Tietokanta
 
