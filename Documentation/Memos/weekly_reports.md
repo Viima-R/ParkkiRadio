@@ -144,4 +144,6 @@ A team meeting on friday. We have worked on the tasks at hand:
 
 # Week 14
 
-Meeting with the tutor after 3 weeks of working by ourselves, and a team meeting again on ???.
+Meeting with the tutor after 3 weeks of working by ourselves. Time for a project progress report.
+
+
