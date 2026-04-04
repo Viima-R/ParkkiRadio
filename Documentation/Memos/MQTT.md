@@ -115,68 +115,99 @@ rtl_433 -f 433.92M -F json \
 | jq -r '.id' \
 | mosquitto_pub -h YOUR_SERVER_IP -p 1883 -u USERNAME -P PASSWORD -t tpms/id -l
 
-## For the listener
+## EMULATION
 
-### !!Check in practise!! HALLUCINATION
+First install *pip install paho-mqtt* or *sudo apt install python3-pip* on both machines (server, database).
 
-</> Python
+Create python programming nano files on both. Broker is going to be the database server.
 
-import sqlite3  
-import paho.mqtt.client as mqtt  
-from datetime import datetime  
+For the Publisher:
 
-#### --- Database setup ---
-conn = sqlite3.connect("tpms.db")  
+nano tpms_publisher.py
+
+import paho.mqtt.client as mqtt
+import json
+import time
+import random
+
+BROKER = "YOUR_BROKER_IP"
+PORT = 1883
+TOPIC = "tpms/data"
+
+RASPBERRY_ID = "rpi_001"
+
+def generate_data():
+    return {
+        "tpms_id": f"TPMS_{random.randint(1000, 9999)}",
+        "raspberry_id": RASPBERRY_ID
+    }
+
+client = mqtt.Client()
+client.connect(BROKER, PORT, 60)
+
+while True:
+    data = generate_data()
+    payload = json.dumps(data)
+    
+    client.publish(TOPIC, payload)
+    print(f"Sent: {payload}")
+    
+    time.sleep(3)
+
+For the Subscriber:
+
+nano tpms_subscriber.py
+
+import paho.mqtt.client as mqtt
+import json
+import sqlite3
+
+BROKER = "YOUR_BROKER_IP"
+PORT = 1883
+TOPIC = "tpms/data"
+
+conn = sqlite3.connect("tpms.db", check_same_thread=False)
 cursor = conn.cursor()
 
-cursor.execute("""  
-CREATE TABLE IF NOT EXISTS sensors (  
-    id TEXT PRIMARY KEY,  
-    first_seen TEXT,  
-    last_seen TEXT  
-)  
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS tpms_data (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tpms_id TEXT,
+    raspberry_id TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+)
 """)
-
 conn.commit()
 
-#### --- MQTT callback ---  
-    def on_message(client, userdata, msg):  
-        sensor_id = msg.payload.decode().strip()  
-        now = datetime.utcnow().isoformat()  
+def on_connect(client, userdata, flags, rc):
+    print("Connected to broker")
+    client.subscribe(TOPIC)
 
-        if not sensor_id:
-            return
+def on_message(client, userdata, msg):
+    try:
+        data = json.loads(msg.payload.decode())
+        
+        tpms_id = data.get("tpms_id")
+        raspberry_id = data.get("raspberry_id")
 
-        try:
-            # Try inserting new sensor
-            cursor.execute("""
-                INSERT INTO sensors (id, first_seen, last_seen)
-                VALUES (?, ?, ?)
-            """, (sensor_id, now, now))
-
-            print(f"New sensor stored: {sensor_id}")
-
-        except sqlite3.IntegrityError:
-            # Already exists → update last_seen
-            cursor.execute("""
-                UPDATE sensors
-                SET last_seen = ?
-                WHERE id = ?
-            """, (now, sensor_id))
-
-            print(f"Updated sensor: {sensor_id}")
-
+        cursor.execute(
+            "INSERT INTO tpms_data (tpms_id, raspberry_id) VALUES (?, ?)",
+            (tpms_id, raspberry_id)
+        )
         conn.commit()
 
-##### --- MQTT setup ---
-client = mqtt.Client()  
-client.username_pw_set("USERNAME", "PASSWORD")  
-client.connect("YOUR_SERVER_IP", 1883)  
+        print(f"Saved: {tpms_id}, {raspberry_id}")
 
-client.subscribe("tpms/id")  
-client.on_message = on_message  
+    except Exception as e:
+        print("Error:", e)
 
-print("Listening for TPMS IDs...")  
-client.loop_forever()  
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+
+client.connect(BROKER, PORT, 60)
+client.loop_forever()
+
+
 
 
