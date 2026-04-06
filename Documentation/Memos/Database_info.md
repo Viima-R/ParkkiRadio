@@ -14,7 +14,7 @@ CREATE TABLE timers (car_id TEXT PRIMARY KEY, location INT REFERENCES location(l
 
 ### Command templates
 
-INSERT INTO location (name, address) VALUES('', '');
+INSERT INTO location (name, address, time_limit) VALUES('', '', '');
 
 INSERT INTO timers (car_id, location) VALUES('', (SELECT location_id FROM location WHERE name = ''));
 
