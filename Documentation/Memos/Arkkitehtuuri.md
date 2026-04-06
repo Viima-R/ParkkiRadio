@@ -63,3 +63,7 @@ Palvelimet CSC:n cPouta alustalla, cPouta on OpenStackiin perustuva pilvipalvelu
 Meillä on webserveri julkisessa aliverkossa ja tietokanta palvelin yksityisessä, johon saa yhteyden vain hyppäämällä ensin webserverin kautta.
 
 Security groupit on määritelty siten, että asiattomilta pääsy tietokanta palvelimelle ei pitäisi onnistua.
+
+Webserverillä on domain nimi https://parkkiradio.duckdns.org/idapp/location-list/, luotu käyttämällä duckdns.
+
+Sertifiointi https varten tehty certbottia käyttäen.
