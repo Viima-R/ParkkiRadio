@@ -18,7 +18,7 @@ INSERT INTO location (name, address) VALUES('', '');
 
 INSERT INTO timers (car_id, location) VALUES('', (SELECT location_id FROM location WHERE name = ''));
 
-INSERT INTO permitted (tpms_id, lot_number, (SELECT location_id FROM location WHERE name = '');)
+INSERT INTO permitted (tpms_id, lot_number, location) VALUES('', '', (SELECT location_id FROM location WHERE name = ''));
 
 DELETE FROM timers WHERE car_id = '';
 
