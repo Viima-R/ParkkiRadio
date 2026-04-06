@@ -125,88 +125,88 @@ For the Publisher:
 
 nano tpms_publisher.py
 
-import paho.mqtt.client as mqtt
-import json
-import time
-import random
+import paho.mqtt.client as mqtt  
+import json  
+import time  
+import random  
 
-BROKER = "YOUR_BROKER_IP"
-PORT = 1883
-TOPIC = "tpms/data"
+BROKER = "YOUR_BROKER_IP"  
+PORT = 1883  
+TOPIC = "tpms/data"  
 
-RASPBERRY_ID = "rpi_001"
+RASPBERRY_ID = "rpi_001"  
 
-def generate_data():
-    return {
-        "tpms_id": f"TPMS_{random.randint(1000, 9999)}",
-        "raspberry_id": RASPBERRY_ID
-    }
+def generate_data():  
+    return {  
+        "tpms_id": f"TPMS_{random.randint(1000, 9999)}",  
+        "raspberry_id": RASPBERRY_ID  
+    }  
 
-client = mqtt.Client()
-client.connect(BROKER, PORT, 60)
+client = mqtt.Client()  
+client.connect(BROKER, PORT, 60)  
 
-while True:
-    data = generate_data()
-    payload = json.dumps(data)
+while True:  
+    data = generate_data()  
+    payload = json.dumps(data)  
     
-    client.publish(TOPIC, payload)
-    print(f"Sent: {payload}")
+    client.publish(TOPIC, payload)  
+    print(f"Sent: {payload}")  
     
-    time.sleep(3)
+    time.sleep(3)  
 
 For the Subscriber:
 
 nano tpms_subscriber.py
 
-import paho.mqtt.client as mqtt
-import json
-import sqlite3
+import paho.mqtt.client as mqtt  
+import json  
+import sqlite3  
 
-BROKER = "YOUR_BROKER_IP"
-PORT = 1883
-TOPIC = "tpms/data"
+BROKER = "YOUR_BROKER_IP"  
+PORT = 1883  
+TOPIC = "tpms/data"  
 
-conn = sqlite3.connect("tpms.db", check_same_thread=False)
-cursor = conn.cursor()
+conn = sqlite3.connect("tpms.db", check_same_thread=False)  
+cursor = conn.cursor()  
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS tpms_data (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    tpms_id TEXT,
-    raspberry_id TEXT,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-)
-""")
-conn.commit()
+cursor.execute("""  
+CREATE TABLE IF NOT EXISTS tpms_data (  
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  
+    tpms_id TEXT,  
+    raspberry_id TEXT,  
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP  
+)  
+""")  
+conn.commit()  
 
-def on_connect(client, userdata, flags, rc):
-    print("Connected to broker")
-    client.subscribe(TOPIC)
+def on_connect(client, userdata, flags, rc):  
+    print("Connected to broker")  
+    client.subscribe(TOPIC)  
 
-def on_message(client, userdata, msg):
-    try:
-        data = json.loads(msg.payload.decode())
+def on_message(client, userdata, msg):  
+    try:  
+        data = json.loads(msg.payload.decode())  
         
-        tpms_id = data.get("tpms_id")
-        raspberry_id = data.get("raspberry_id")
+        tpms_id = data.get("tpms_id")  
+        raspberry_id = data.get("raspberry_id")  
 
-        cursor.execute(
-            "INSERT INTO tpms_data (tpms_id, raspberry_id) VALUES (?, ?)",
-            (tpms_id, raspberry_id)
-        )
-        conn.commit()
+        cursor.execute(  
+            "INSERT INTO tpms_data (tpms_id, raspberry_id) VALUES (?, ?)",  
+            (tpms_id, raspberry_id)  
+        )  
+        conn.commit()  
 
-        print(f"Saved: {tpms_id}, {raspberry_id}")
+        print(f"Saved: {tpms_id}, {raspberry_id}")  
 
-    except Exception as e:
-        print("Error:", e)
+    except Exception as e:  
+        print("Error:", e)  
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
+client = mqtt.Client()  
+client.on_connect = on_connect  
+client.on_message = on_message  
 
-client.connect(BROKER, PORT, 60)
-client.loop_forever()
+client.connect(BROKER, PORT, 60)  
+client.loop_forever()  
 
 
 
