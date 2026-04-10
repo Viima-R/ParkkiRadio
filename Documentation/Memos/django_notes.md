@@ -6,7 +6,55 @@ Django framework for web develoment.
 - built-in admin panel ready to use
 - easy integration with internal Sqlite or external database
 
-### Django installation
+### Working on Django by cloning a project from a repo
+
+1. git clone
+2. cd project
+3. python -m venv venv
+4. activate venv
+5. pip install -r requirements.txt
+7. edit .env
+8. python manage.py migrate
+10. python manage.py runserver
+
+Longer version:
+
+1. Clone the repo to where you want it: ``git repo``.
+2. Go to the project folder (it's the one with manage.py)
+3. Create a virtual environment, for example ``python -m venv venv``
+4. Activate virtual environment, for example ``source venv/bin/activate``
+5. Install Django and dependencies inside virtual environment ``pip install requirements.txt``
+6. Fill the .evn file with appropriate variables
+7. Run migrations ``python manage.py migrate``
+8. Run the development server ``python manage.py runserver``
+
+Fill .env file with the appopriate information
+
+In terminal, do ``python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`` and then copy this into the SECRET_KEY in .env file. This is only for your local project, so it could be also just some random string, but the SECRET_KEY cannot be empty. SECRET_KEY for production is only on the server.
+
+
+```
+# Added by Copilot: copy this file to .env and fill in real values.
+SECRET_KEY=replace-with-a-long-random-secret
+DEBUG=False
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=parkkidb
+DB_USER=your-db-user
+DB_PASSWORD=your-db-password
+DB_HOST=localhost
+DB_PORT=5432
+``
+
+
+
+
+
+### Django installation for own project
+
+First, create a folder where you want to keep your project.
 
 1. Create a virtual environment, for example
 
@@ -21,6 +69,7 @@ Django framework for web develoment.
 ``which pip``
 
 If you don't see env in the path, something's wrong (don't install Django until it's fixed).
+
 
 4. Install Django
 
