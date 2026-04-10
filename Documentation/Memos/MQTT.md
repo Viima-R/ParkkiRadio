@@ -213,21 +213,21 @@ client.loop_forever()
 
 ## permitted
 
-- tpms_id    *text*
+- tpms_id    *text*    not null    PK
 - lot_number    *int*
 - location    *text*
 
 ## location
 
-- location_id     *text*
+- location_id     *text*    not null    PK
 - name            *text*
 - address         *text*
 - time_limit      *int*
 
 ## timers
 
-- car_id      *text*
-- location    *int???*
+- car_id      *text*    not null
+- location    *int*
 - start_time  *timestamp without time zone*
 - overtime    *boolean*
 
