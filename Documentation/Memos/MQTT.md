@@ -215,7 +215,7 @@ client.loop_forever()
 
 - tpms_id    *text*    not null    PK
 - lot_number    *int*
-- location    *text*
+- location    *text*    FK(location(location_id))
 
 ## location
 
@@ -227,7 +227,7 @@ client.loop_forever()
 ## timers
 
 - car_id      *text*    not null
-- location    *int*
+- location    *text*    FK(location(location_id))
 - start_time  *timestamp without time zone*
 - overtime    *boolean*
 
