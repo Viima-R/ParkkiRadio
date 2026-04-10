@@ -34,7 +34,6 @@ In terminal, do ``python -c "from django.core.management.utils import get_random
 
 
 ```
-# Added by Copilot: copy this file to .env and fill in real values.
 SECRET_KEY=replace-with-a-long-random-secret
 DEBUG=False
 ALLOWED_HOSTS=localhost,127.0.0.1
