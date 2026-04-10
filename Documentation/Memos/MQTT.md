@@ -121,40 +121,40 @@ First install *pip install paho-mqtt* or *sudo apt install python3-pip* on both 
 
 Create python programming nano files on both. Broker is going to be the database server.
 
-For the Publisher:
+For the Publisher (the correct identations in edit mode):
 
 nano tpms_publisher.py
 
-import paho.mqtt.client as mqtt  
-import json  
-import time  
-import random  
+import paho.mqtt.client as mqtt
+import json
+import time
+import random
 
-BROKER = "YOUR_BROKER_IP"  
-PORT = 1883  
-TOPIC = "tpms/data"  
+BROKER = "192.168.1.252"
+PORT = 1883
+TOPIC = "tpms/data"
 
-RASPBERRY_ID = "rpi_001"  
+LOCATION_ID = "rpi_001"
 
-def generate_data():  
-    return {  
-        "tpms_id": f"TPMS_{random.randint(1000, 9999)}",  
-        "raspberry_id": RASPBERRY_ID  
-    }  
+def generate_data():
+    return {
+        "tpms_id": f"TPMS_{random.randint(1000, 9999)}",
+        "location_id": LOCATION_ID
+    }
 
-client = mqtt.Client()  
-client.connect(BROKER, PORT, 60)  
+client = mqtt.Client()
+client.connect(BROKER, PORT, 60)
 
-while True:  
-    data = generate_data()  
-    payload = json.dumps(data)  
-    
-    client.publish(TOPIC, payload)  
-    print(f"Sent: {payload}")  
-    
-    time.sleep(3)  
+while True:
+    data = generate_data()
+    payload = json.dumps(data)
 
-For the Subscriber(the correct identations in edit mode):
+    client.publish(TOPIC, payload)
+    print(f"Sent: {payload}")
+
+    time.sleep(3) 
+
+For the Subscriber (the correct identations in edit mode):
 
 nano tpms_subscriber.py
 
