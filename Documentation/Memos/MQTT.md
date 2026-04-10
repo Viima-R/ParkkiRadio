@@ -209,5 +209,27 @@ client.connect(BROKER, PORT, 60)
 client.loop_forever()  
 
 
+# SQL
+
+## permitted
+
+- tpms_id    *text*
+- lot_number    *int*
+- location    *text*
+
+## location
+
+- location_id     *text*
+- name            *text*
+- address         *text*
+- time_limit      *int*
+
+## timers
+
+- car_id      *text*
+- location    *int???*
+- start_time  *timestamp without time zone*
+- overtime    *boolean*
+
 
 
