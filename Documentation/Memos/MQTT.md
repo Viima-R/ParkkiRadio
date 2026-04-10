@@ -154,7 +154,7 @@ while True:
     
     time.sleep(3)  
 
-For the Subscriber:
+For the Subscriber(the correct identations in edit mode):
 
 nano tpms_subscriber.py
 
@@ -162,18 +162,18 @@ import paho.mqtt.client as mqtt
 import json  
 import psycopg2  
 
-# ----- MQTT settings -----  
+#----- MQTT settings -----  
 BROKER = "192.168.1.252"  
 PORT = 1883  
 TOPIC = "tpms/data"  
 
-# ----- PostgreSQL settings -----  
+#----- PostgreSQL settings -----  
 DB_HOST = "192.168.1.252"  
 DB_NAME = "parkkiradio"  
 DB_USER = "tpms_user"  
 DB_PASSWORD = "strongpassword"  
 
-# ----- Connect to PostgreSQL -----  
+#----- Connect to PostgreSQL -----  
 conn = psycopg2.connect(  
     host=DB_HOST,  
     database=DB_NAME,  
@@ -182,7 +182,7 @@ conn = psycopg2.connect(
 )  
 cursor = conn.cursor()  
 
-# ----- MQTT callbacks -----  
+#----- MQTT callbacks -----  
 def on_connect(client, userdata, flags, rc):  
     print("Connected to broker", rc)  
     client.subscribe(TOPIC)  
@@ -193,13 +193,13 @@ def on_message(client, userdata, msg):
         tpms_id = data.get("tpms_id")  
         location_id = data.get("location_id")  
 
-# Insert tpms_id into permitted  
+#Insert tpms_id into permitted  
         cursor.execute(  
             "INSERT INTO permitted (tpms_id) VALUES (%s) ON CONFLICT DO NOTHING",  
             (tpms_id,)  
        )  
 
-# Insert raspberry_id into location  
+#Insert raspberry_id into location  
         cursor.execute(  
             "INSERT INTO location (location_id) VALUES (%s) ON CONFLICT DO NOTHING",  
             (location_id,)  
@@ -211,7 +211,7 @@ def on_message(client, userdata, msg):
         print("Error:", e)  
         conn.rollback()  
 
-# ----- MQTT client setup -----  
+#----- MQTT client setup -----  
 client = mqtt.Client()  
 client.on_connect = on_connect  
 client.on_message = on_message  
