@@ -6,7 +6,7 @@ Django framework for web develoment.
 - built-in admin panel ready to use
 - easy integration with internal Sqlite or external database
 
-### Working on Django by cloning a project from a repo
+## Working on Django by cloning a project from a repo (for Linux, see guide for Windows below)
 
 1. git clone
 2. cd project
@@ -23,7 +23,7 @@ Longer version:
 2. Go to the project folder (it's the one with manage.py)
 3. Create a virtual environment, for example ``python -m venv venv``
 4. Activate virtual environment, for example ``source venv/bin/activate``
-5. Install Django and dependencies inside virtual environment ``pip install requirements.txt``
+5. Install Django and dependencies inside virtual environment ``pip install -r requirements.txt``
 6. Fill the .evn file with appropriate variables
 7. Run migrations ``python manage.py migrate``
 8. Run the development server ``python manage.py runserver``
@@ -32,6 +32,9 @@ Fill .env file with the appopriate information
 
 In terminal, do ``python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`` and then copy this into the SECRET_KEY in .env file. This is only for your local project, so it could be also just some random string, but the SECRET_KEY cannot be empty. SECRET_KEY for production is only on the server.
 
+ALLOWED_HOSTS need to be localhost,127.0.0.1 for you to be able to run the development server in your localhost
+
+**The guide incomplete, need to add database info etc**
 
 ```
 SECRET_KEY=replace-with-a-long-random-secret
@@ -40,18 +43,153 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 
 
 DB_ENGINE=django.db.backends.postgresql
-DB_NAME=parkkidb
+DB_NAME=youproject
 DB_USER=your-db-user
 DB_PASSWORD=your-db-password
 DB_HOST=localhost
 DB_PORT=5432
-``
+```
+
+## Django + PostgreSQL Setup Guide (for Windows, by ChatGPT, not tested by humans)
+
+### Prerequisites
+
+* PostgreSQL is already installed and running
+* Git is installed
+* Python is installed
+
+---
+
+### 1. Clone the repository
+
+```bash
+git clone <repo-url>
+cd <repo-folder> 
+```
+repo-folder = the one with manage.py
+
+---
+
+### 2. Create and activate virtual environment
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+---
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### 4. Create the database and user (PostgreSQL)
+
+Open **SQL Shell (psql)** and run:
+
+```sql
+CREATE DATABASE myproject;
+
+CREATE USER myuser WITH PASSWORD 'mypassword';
+
+ALTER ROLE myuser SET client_encoding TO 'utf8';
+ALTER ROLE myuser SET default_transaction_isolation TO 'read committed';
+ALTER ROLE myuser SET timezone TO 'UTC';
+
+GRANT ALL PRIVILEGES ON DATABASE myproject TO myuser;
+```
+
+Exit:
+
+```sql
+\q
+```
+
+---
+
+### 5. Set up environment variables
+
+Copy the example file:
+
+```bash
+copy .env.example .env
+```
+
+Edit `.env` and set values:
+
+```env
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+SECRET_KEY=generate-your-own
+
+DB_NAME=myproject
+DB_USER=myuser
+DB_PASSWORD=mypassword
+DB_HOST=localhost
+DB_PORT=5432
+```
+
+---
+
+### 6. Apply migrations
+
+```bash
+python manage.py migrate
+```
+
+---
+
+### 7. (Optional) Create superuser
+
+```bash
+python manage.py createsuperuser
+```
+
+---
+
+### 8. Run development server
+
+```bash
+python manage.py runserver
+```
+
+Open in browser:
+[http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+---
+
+#### Common Issues
+
+#### PostgreSQL connection errors
+
+* Ensure PostgreSQL service is running
+* Check username/password in `.env`
+
+#### psycopg2 issues
+
+```bash
+pip install psycopg2-binary
+```
+
+#### Bad Request (400)
+
+* Check `ALLOWED_HOSTS` includes `localhost` and `127.0.0.1`
+
+---
+
+#### Notes
+
+* Do NOT commit `.env`
+* Ensure `venv/` is in `.gitignore`
+* Each developer uses their own `.env`
 
 
-
-
-
-### Django installation for own project
+## Django installation for own project (for Linux)
 
 First, create a folder where you want to keep your project.
 
