@@ -160,53 +160,65 @@ nano tpms_subscriber.py
 
 import paho.mqtt.client as mqtt  
 import json  
-import sqlite3  
+import psycopg2  
 
-BROKER = "YOUR_BROKER_IP"  
+# ----- MQTT settings -----  
+BROKER = "192.168.1.252"  
 PORT = 1883  
 TOPIC = "tpms/data"  
 
-conn = sqlite3.connect("tpms.db", check_same_thread=False)  
+# ----- PostgreSQL settings -----  
+DB_HOST = "192.168.1.252"  
+DB_NAME = "parkkiradio"  
+DB_USER = "tpms_user"  
+DB_PASSWORD = "strongpassword"  
+
+# ----- Connect to PostgreSQL -----  
+conn = psycopg2.connect(  
+    host=DB_HOST,  
+    database=DB_NAME,  
+    user=DB_USER,  
+    password=DB_PASSWORD  
+)  
 cursor = conn.cursor()  
 
-cursor.execute("""  
-CREATE TABLE IF NOT EXISTS tpms_data (  
-    id INTEGER PRIMARY KEY AUTOINCREMENT,  
-    tpms_id TEXT,  
-    raspberry_id TEXT,  
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP  
-)  
-""")  
-conn.commit()  
-
+# ----- MQTT callbacks -----  
 def on_connect(client, userdata, flags, rc):  
-    print("Connected to broker")  
+    print("Connected to broker", rc)  
     client.subscribe(TOPIC)  
 
 def on_message(client, userdata, msg):  
     try:  
         data = json.loads(msg.payload.decode())  
-        
         tpms_id = data.get("tpms_id")  
-        raspberry_id = data.get("raspberry_id")  
+        location_id = data.get("location_id")  
 
+# Insert tpms_id into permitted  
         cursor.execute(  
-            "INSERT INTO tpms_data (tpms_id, raspberry_id) VALUES (?, ?)",  
-            (tpms_id, raspberry_id)  
+            "INSERT INTO permitted (tpms_id) VALUES (%s) ON CONFLICT DO NOTHING",  
+            (tpms_id,)  
+       )  
+
+# Insert raspberry_id into location  
+        cursor.execute(  
+            "INSERT INTO location (location_id) VALUES (%s) ON CONFLICT DO NOTHING",  
+            (location_id,)  
         )  
         conn.commit()  
-
-        print(f"Saved: {tpms_id}, {raspberry_id}")  
+        print(f"Saved: {tpms_id}, {location_id}")  
 
     except Exception as e:  
         print("Error:", e)  
+        conn.rollback()  
 
+# ----- MQTT client setup -----  
 client = mqtt.Client()  
 client.on_connect = on_connect  
 client.on_message = on_message  
 
 client.connect(BROKER, PORT, 60)  
-client.loop_forever()  
+client.loop_forever()
+
 
 
 # SQL
