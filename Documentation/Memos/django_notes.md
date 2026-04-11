@@ -177,6 +177,7 @@ Open in browser:
 ```bash
 pip install psycopg2-binary
 ```
+This shouldn't be an issue, though, because psycopg2-binary is included in the requirements.txt.
 
 #### Bad Request (400)
 
