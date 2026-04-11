@@ -124,14 +124,16 @@ copy .env.example .env
 Edit `.env` and set values:
 
 ```env
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
 
-SECRET_KEY=generate-your-own
+SECRET_KEY=generate-a-random-string-here
+DEBUG=False
+ALLOWED_HOSTS="localhost, 127.0.0.1"
 
-DB_NAME=myproject
-DB_USER=myuser
-DB_PASSWORD=mypassword
+
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=your-db-name
+DB_USER=your-db-user
+DB_PASSWORD=your-db-password
 DB_HOST=localhost
 DB_PORT=5432
 ```
