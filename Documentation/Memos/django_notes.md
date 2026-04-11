@@ -5,6 +5,11 @@ Django framework for web develoment.
 - Python based
 - built-in admin panel ready to use
 - easy integration with internal Sqlite or external database
+- in development, Django runs on its on development server
+- in production, Django (in this project) runs on Gunicorn + Nginx
+- Gunicorn is bound to localhost on the server and is not exposed to the internet
+- Nginx hanldes web traffic and requests from the web user, and proxies the requests to Gunicorn
+- Gunicorn runs Django, and Django does the app logic
 
 ## Working on Django by cloning a project from a repo (for Linux, see guide for Windows below)
 
