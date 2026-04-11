@@ -85,6 +85,8 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+Django is included in requirements.txt.
+
 ---
 
 ### 4. Create the database and user (PostgreSQL)
