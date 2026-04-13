@@ -146,4 +146,12 @@ A team meeting on friday. We have worked on the tasks at hand:
 
 Meeting with the tutor after 3 weeks of working by ourselves. Time for a project progress report.
 
+# Week 15
+
+# Week 16
+
+Check up session with the tutor teacher; realization of the limits of our concept, trying to make more simple and to find a way to publish.... 
+
+- Bluetooth-beacons over TMPS
+
 
