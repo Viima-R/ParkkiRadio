@@ -219,7 +219,85 @@ client.on_message = on_message
 client.connect(BROKER, PORT, 60)  
 client.loop_forever()
 
+# tpms_checker.py
 
+import psycopg2
+import time
+
+DB_HOST = "192.168.1.252"
+DB_NAME = "parkkiradio"
+DB_USER = "tpms_user"
+DB_PASSWORD = "strongpassword"
+
+
+def get_conn():
+    return psycopg2.connect(
+        host=DB_HOST,
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD
+    )
+
+
+def process_cars():
+    conn = get_conn()
+    cursor = conn.cursor()
+
+    try:
+        # Get all current cars from timers
+        cursor.execute("SELECT car_id, location FROM timers")
+        cars = cursor.fetchall()
+
+        for car_id, location in cars:
+
+            # 1. Check if car is known
+            cursor.execute(
+                "SELECT location FROM idapp_carID WHERE car_id = %s",
+                (car_id,)
+            )
+            known = cursor.fetchone()
+
+            if known:
+                known_location = known[0]
+
+                if known_location == location:
+                    # Known and correct location → do nothing
+                    continue
+                else:
+                    # Known but wrong location (optional handling)
+                    print(f"Car {car_id} in wrong location!")
+                    continue
+
+            # 2. Unknown car → handle idapp_timer
+            cursor.execute(
+                """
+                INSERT INTO idapp_timer (carID, timestamp, overtime, location_id)
+                VALUES (%s, NOW(), FALSE, %s)
+                ON CONFLICT (carID)
+                DO UPDATE SET
+                    timestamp = NOW(),
+                    location_id = EXCLUDED.location_id,
+                    overtime = FALSE
+                """,
+                (car_id, location)
+            )
+
+        conn.commit()
+        print("Check cycle complete")
+
+    except Exception as e:
+        print("Error:", e)
+        conn.rollback()
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+if __name__ == "__main__":
+    while True:
+        process_cars()
+        time.sleep(5)  # adjust frequency
 
 # SQL
 
