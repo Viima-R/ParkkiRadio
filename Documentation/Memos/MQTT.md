@@ -359,5 +359,5 @@ if __name__ == "__main__":
 - carID        *varchar*    PK
 - timestamp    *timestamp with time zone*
 - overtime     *boolean*
-- location_id  *bigint*    FK(location_id(idapp_location("locationID")))
+- location_id  *text*
 
