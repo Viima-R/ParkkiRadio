@@ -115,13 +115,13 @@ rtl_433 -f 433.92M -F json \
 | jq -r '.id' \
 | mosquitto_pub -h YOUR_SERVER_IP -p 1883 -u USERNAME -P PASSWORD -t tpms/id -l
 
-## EMULATION
+# EMULATION
 
 First install *pip install paho-mqtt* or *sudo apt install python3-pip* on both machines (server, database).
 
 Create python programming nano files on both. Broker is going to be the database server.
 
-For the Publisher (the correct identations in edit mode):
+## For the Publisher (the correct indentations in edit mode):
 
 nano tpms_publisher.py
 
@@ -136,9 +136,17 @@ TOPIC = "tpms/data"
 
 LOCATION_ID = "rpi_001"
 
+PREFIXES = ["2E8F", "D4C0", "A1B2", "9F3D"]
+
 def generate_data():
+    prefix = random.choice(PREFIXES)
+
+    suffix = f"{random.randint(0, 0xFFFF):04X}".lstrip("0") or "0"
+
+    tpms_id = f"{prefix}{suffix}"
+
     return {
-        "tpms_id": f"TPMS_{random.randint(1000, 9999)}",
+        "tpms_id": tpms_id,
         "location_id": LOCATION_ID
     }
 
@@ -154,72 +162,89 @@ while True:
 
     time.sleep(3) 
 
-For the Subscriber (the correct identations in edit mode):
+## For the Subscriber (the correct indentations in edit mode):
 
 nano tpms_subscriber.py
 
-import paho.mqtt.client as mqtt  
-import json  
-import psycopg2  
+import paho.mqtt.client as mqtt
+import json
+import psycopg2
 
-#----- MQTT settings -----  
-BROKER = "192.168.1.252"  
-PORT = 1883  
-TOPIC = "tpms/data"  
+# ----- MQTT settings -----
+BROKER = "192.168.1.252"
+PORT = 1883
+TOPIC = "tpms/data"
 
-#----- PostgreSQL settings -----  
-DB_HOST = "192.168.1.252"  
-DB_NAME = "parkkiradio"  
-DB_USER = "tpms_user"  
-DB_PASSWORD = "strongpassword"  
+# ----- PostgreSQL settings -----
+DB_HOST = "192.168.1.252"
+DB_NAME = "parkkiradio"
+DB_USER = "tpms_user"
+DB_PASSWORD = "strongpassword"
 
-#----- Connect to PostgreSQL -----  
-conn = psycopg2.connect(  
-    host=DB_HOST,  
-    database=DB_NAME,  
-    user=DB_USER,  
-    password=DB_PASSWORD  
-)  
-cursor = conn.cursor()  
+# ----- Connect to PostgreSQL -----
+conn = psycopg2.connect(
+    host=DB_HOST,
+    database=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD
+)
+cursor = conn.cursor()
 
-#----- MQTT callbacks -----  
-def on_connect(client, userdata, flags, rc):  
-    print("Connected to broker", rc)  
-    client.subscribe(TOPIC)  
+# ----- MQTT callbacks -----
+def on_connect(client, userdata, flags, rc):
+    print("Connected to broker", rc)
+    client.subscribe(TOPIC)
 
-def on_message(client, userdata, msg):  
-    try:  
-        data = json.loads(msg.payload.decode())  
-        tpms_id = data.get("tpms_id")  
-        location_id = data.get("location_id")  
+def on_message(client, userdata, msg):
+    try:
+        data = json.loads(msg.payload.decode())
+        tpms_id = data.get("tpms_id")
+        location_id = data.get("location_id")
 
-#Insert tpms_id into permitted  
-        cursor.execute(  
-            "INSERT INTO permitted (tpms_id) VALUES (%s) ON CONFLICT DO NOTHING",  
-            (tpms_id,)  
-       )  
+# Extract car_id (first 4 chars)
+        car_id = tpms_id[:4]
 
-#Insert raspberry_id into location  
-        cursor.execute(  
-            "INSERT INTO location (location_id) VALUES (%s) ON CONFLICT DO NOTHING",  
-            (location_id,)  
-        )  
-        conn.commit()  
-        print(f"Saved: {tpms_id}, {location_id}")  
+# Insert car
+        cursor.execute(
+             """
+             INSERT INTO timers (car_id, location, start_time)
+             VALUES (%s, %s, NOW())
+             ON CONFLICT (car_id)
+             DO UPDATE SET
+                 location = EXCLUDED.location,
+                 start_time = NOW()
+             """,
+            (car_id, location_id)
+        )
 
-    except Exception as e:  
-        print("Error:", e)  
-        conn.rollback()  
+# Insert tpms_id into permitted
+        cursor.execute(
+            "INSERT INTO permitted (tpms_id) VALUES (%s) ON CONFLICT DO NOTHING",
+            (tpms_id,)
+        )
 
-#----- MQTT client setup -----  
-client = mqtt.Client()  
-client.on_connect = on_connect  
-client.on_message = on_message  
+# Insert raspberry_id into location
+        cursor.execute(
+            "INSERT INTO location (location_id) VALUES (%s) ON CONFLICT DO NOTHING",
+            (location_id,)
+        )
+        conn.commit()
+        print(f"Saved: {tpms_id}, car: {car_id}, location: {location_id}")
 
-client.connect(BROKER, PORT, 60)  
+    except Exception as e:
+        print("Error:", e)
+        conn.rollback()
+
+# ----- MQTT client setup -----
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+
+client.connect(BROKER, PORT, 60)
 client.loop_forever()
 
-# tpms_checker.py
+
+## tpms_checker.py
 
 import psycopg2
 import time
@@ -261,19 +286,19 @@ def process_cars():
                 known_location = known[0]
 
                 if known_location == location:
-                    # Known and correct location → do nothing
+                    # Known and correct location -> do nothing
                     continue
                 else:
                     # Known but wrong location (optional handling)
                     print(f"Car {car_id} in wrong location!")
                     continue
 
-            # 2. Unknown car → handle idapp_timer
+            # 2. Unknown car -> handle idapp_timer
             cursor.execute(
                 """
-                INSERT INTO idapp_timer (carID, timestamp, overtime, location_id)
+                INSERT INTO idapp_timer ("carID", timestamp, overtime, location_id)
                 VALUES (%s, NOW(), FALSE, %s)
-                ON CONFLICT (carID)
+                ON CONFLICT ("carID")
                 DO UPDATE SET
                     timestamp = NOW(),
                     location_id = EXCLUDED.location_id,
@@ -298,6 +323,7 @@ if __name__ == "__main__":
     while True:
         process_cars()
         time.sleep(5)  # adjust frequency
+
 
 # SQL
 
