@@ -245,6 +245,13 @@ client.loop_forever()
 - end_time    *timestamp*
 - overtime    *boolean*
 
+## idapp_carID
+
+- id    *bigint*
+- car_id    *varchar*    PK
+- location    *varchar*
+- created_at    *timestamp with time zone*
+
 ## idapp_timer
 
 - carID        *varchar*    PK
