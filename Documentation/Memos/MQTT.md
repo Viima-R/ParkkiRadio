@@ -241,8 +241,6 @@ client.loop_forever()
 - car_id      *text*    not null
 - location    *text*    FK(location(location_id))
 - start_time  *timestamp without time zone*
-- last_seen   *timestamp*
-- end_time    *timestamp*
 - overtime    *boolean*
 
 ## idapp_carID
