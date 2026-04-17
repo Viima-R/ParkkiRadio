@@ -324,7 +324,6 @@ if __name__ == "__main__":
         process_cars()
         time.sleep(5)  # adjust frequency
 
-
 # SQL
 
 ## permitted
