@@ -1,0 +1,22 @@
+# DATABASE
+
+We are using PostgreSQL version 16.13 (Ubuntu 16.13-0ubuntu0.24.04.1).
+
+## Tables
+
+<img width="506" height="294" alt="Image" src="https://github.com/user-attachments/assets/af9ebcc8-c578-4c70-828f-853e7d969ad3" />
+
+## Columns
+
+### idapp_timer
+
+<img width="595" height="188" alt="Image" src="https://github.com/user-attachments/assets/6e2a19af-ecdb-4d29-81cd-c88f3641c748" />
+
+
+### idapp_location
+
+<img width="648" height="184" alt="Image" src="https://github.com/user-attachments/assets/cd7792d1-5b34-4ec3-8bdc-c04a3b6326d1" />
+
+### idapp_carid
+
+<img width="788" height="158" alt="Image" src="https://github.com/user-attachments/assets/c7cfceef-7cf2-4b4f-830f-ce670dfb6d6c" />
