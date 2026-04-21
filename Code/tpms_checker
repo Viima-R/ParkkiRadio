@@ -1,0 +1,38 @@
+tpms_checker.py
+
+import paho.mqtt.client as mqtt
+import json
+import time
+import random
+
+BROKER = "192.168.1.252"
+PORT = 1883
+TOPIC = "tpms/data"
+
+LOCATION_ID = "1"
+
+PREFIXES = ["2E8F", "D4C0", "A1B2", "9F3D"]
+
+def generate_data():
+    prefix = random.choice(PREFIXES)
+
+    suffix = f"{random.randint(0, 0xFFFF):04X}".lstrip("0") or "0"
+
+    tpms_id = f"{prefix}{suffix}"
+
+    return {
+        "tpms_id": tpms_id,
+        "location_id": LOCATION_ID
+    }
+
+client = mqtt.Client()
+client.connect(BROKER, PORT, 60)
+
+while True:
+    data = generate_data()
+    payload = json.dumps(data)
+
+    client.publish(TOPIC, payload)
+    print(f"Sent: {payload}")
+
+    time.sleep(3)
