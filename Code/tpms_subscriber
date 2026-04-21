@@ -1,0 +1,78 @@
+tpms_subscriber.py
+
+import paho.mqtt.client as mqtt
+import json
+import psycopg2
+
+# ----- MQTT settings -----
+BROKER = "192.168.1.252"
+PORT = 1883
+TOPIC = "tpms/data"
+
+# ----- PostgreSQL settings -----
+DB_HOST = "192.168.1.252"
+DB_NAME = "parkkiradio"
+DB_USER = "tpms_user"
+DB_PASSWORD = "strongpassword"
+
+# ----- Connect to PostgreSQL -----
+conn = psycopg2.connect(
+    host=DB_HOST,
+    database=DB_NAME,
+    user=DB_USER,
+    password=DB_PASSWORD
+)
+cursor = conn.cursor()
+
+# ----- MQTT callbacks -----
+def on_connect(client, userdata, flags, rc):
+    print("Connected to broker", rc)
+    client.subscribe(TOPIC)
+
+def on_message(client, userdata, msg):
+    try:
+        data = json.loads(msg.payload.decode())
+        tpms_id = data.get("tpms_id")
+        location_id = data.get("location_id")
+
+# Extract car_id (first 4 chars)
+        car_id = tpms_id[:4]
+
+# Insert car
+        cursor.execute(
+             """
+             INSERT INTO timers (car_id, location, start_time)
+             VALUES (%s, %s, NOW())
+             ON CONFLICT (car_id)
+             DO UPDATE SET
+                 location = EXCLUDED.location,
+                 start_time = NOW()
+             """,
+            (car_id, location_id)
+        )
+
+# Insert tpms_id into permitted
+        cursor.execute(
+            "INSERT INTO permitted (tpms_id) VALUES (%s) ON CONFLICT DO NOTHING",
+            (tpms_id,)
+        )
+
+# Insert raspberry_id into location
+        cursor.execute(
+            "INSERT INTO location (location_id) VALUES (%s) ON CONFLICT DO NOTHING",
+            (location_id,)
+        )
+        conn.commit()
+        print(f"Saved: {tpms_id}, car: {car_id}, location: {location_id}")
+
+    except Exception as e:
+        print("Error:", e)
+        conn.rollback()
+
+# ----- MQTT client setup -----
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+
+client.connect(BROKER, PORT, 60)
+client.loop_forever()
