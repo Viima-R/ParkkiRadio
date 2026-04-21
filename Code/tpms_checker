@@ -1,38 +1,79 @@
 tpms_checker.py
 
-import paho.mqtt.client as mqtt
-import json
+import psycopg2
 import time
-import random
 
-BROKER = "192.168.1.252"
-PORT = 1883
-TOPIC = "tpms/data"
+DB_HOST = "192.168.1.252"
+DB_NAME = "parkkiradio"
+DB_USER = "tpms_user"
+DB_PASSWORD = "strongpassword"
 
-LOCATION_ID = "1"
 
-PREFIXES = ["2E8F", "D4C0", "A1B2", "9F3D"]
+def get_conn():
+    return psycopg2.connect(
+        host=DB_HOST,
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD
+    )
 
-def generate_data():
-    prefix = random.choice(PREFIXES)
 
-    suffix = f"{random.randint(0, 0xFFFF):04X}".lstrip("0") or "0"
+def process_cars():
+    conn = get_conn()
+    cursor = conn.cursor()
 
-    tpms_id = f"{prefix}{suffix}"
+    try:
+        # Get all current cars from timers
+        cursor.execute("SELECT car_id, location FROM timers")
+        cars = cursor.fetchall()
 
-    return {
-        "tpms_id": tpms_id,
-        "location_id": LOCATION_ID
-    }
+        for car_id, location in cars:
 
-client = mqtt.Client()
-client.connect(BROKER, PORT, 60)
+            # 1. Check if car is known
+            cursor.execute(
+                "SELECT location FROM idapp_carID WHERE car_id = %s",
+                (car_id,)
+            )
+            known = cursor.fetchone()
 
-while True:
-    data = generate_data()
-    payload = json.dumps(data)
+            if known:
+                known_location = known[0]
 
-    client.publish(TOPIC, payload)
-    print(f"Sent: {payload}")
+                if known_location == location:
+                    # Known and correct location -> do nothing
+                    continue
+                else:
+                    # Known but wrong location (optional handling)
+                    print(f"Car {car_id} in wrong location!")
+                    continue
 
-    time.sleep(3)
+            # 2. Unknown car -> handle idapp_timer
+            cursor.execute(
+                """
+                INSERT INTO idapp_timer ("carID", timestamp, overtime, location_id)
+                VALUES (%s, NOW(), FALSE, %s)
+                ON CONFLICT ("carID")
+                DO UPDATE SET
+                    timestamp = NOW(),
+                    location_id = EXCLUDED.location_id,
+                    overtime = FALSE
+                """,
+                (car_id, location)
+            )
+
+        conn.commit()
+        print("Check cycle complete")
+
+    except Exception as e:
+        print("Error:", e)
+        conn.rollback()
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+if __name__ == "__main__":
+    while True:
+        process_cars()
+        time.sleep(5)  # adjust frequency
