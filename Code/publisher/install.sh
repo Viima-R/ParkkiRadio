@@ -2,7 +2,7 @@
 # =============================================================================
 # TPMS Publisher - Install Script
 # Raspberry Pi / Debian 12 side
-# Installs: rtl_433, paho-mqtt, configures and registers systemd service
+# Installs: rtl_433, paho-mqtt, mosquitto, configures and registers systemd service
 # =============================================================================
 
 set -e
@@ -37,18 +37,27 @@ fi
 
 # --- System packages ---
 echo ""
-echo "[1/5] Installing system packages..."
+echo "[1/6] Installing system packages..."
 apt-get update -qq
 apt-get install -y \
     rtl-sdr \
     rtl-433 \
+    mosquitto \
+    mosquitto-clients \
     python3 \
     python3-pip \
     python3-venv
 
+# --- Mosquitto config ---
+echo ""
+echo "[2/6] Configuring Mosquitto..."
+cp "$SCRIPT_DIR/../mosquitto/mosquitto.conf" /etc/mosquitto/mosquitto.conf
+systemctl enable mosquitto
+systemctl restart mosquitto
+
 # --- Python virtual environment ---
 echo ""
-echo "[2/5] Setting up Python virtual environment..."
+echo "[3/6] Setting up Python virtual environment..."
 VENV_DIR="/opt/tpms_publisher/venv"
 mkdir -p /opt/tpms_publisher
 python3 -m venv "$VENV_DIR"
@@ -57,7 +66,7 @@ python3 -m venv "$VENV_DIR"
 
 # --- Write config file ---
 echo ""
-echo "[3/5] Writing configuration..."
+echo "[4/6] Writing configuration..."
 cat > /opt/tpms_publisher/config.env <<EOF
 MQTT_BROKER=$MQTT_BROKER
 MQTT_PORT=$MQTT_PORT
@@ -68,13 +77,13 @@ chmod 600 /opt/tpms_publisher/config.env
 
 # --- Deploy publisher script ---
 echo ""
-echo "[4/5] Deploying publisher script..."
+echo "[5/6] Deploying publisher script..."
 cp "$SCRIPT_DIR/scripts/tpms_publisher.py" /opt/tpms_publisher/tpms_publisher.py
 chmod 755 /opt/tpms_publisher/tpms_publisher.py
 
 # --- Systemd service ---
 echo ""
-echo "[5/5] Installing systemd service..."
+echo "[6/6] Installing systemd service..."
 cp "$SCRIPT_DIR/systemd/tpms-publisher.service" /etc/systemd/system/tpms-publisher.service
 systemctl daemon-reload
 systemctl enable tpms-publisher.service
@@ -89,4 +98,6 @@ echo ""
 echo " Useful commands:"
 echo "   systemctl status tpms-publisher"
 echo "   journalctl -u tpms-publisher -f"
+echo "   systemctl status mosquitto"
+echo "   journalctl -u mosquitto -f"
 echo "============================================="
