@@ -102,10 +102,10 @@ def ensure_location(cursor, location_id: str):
 
 def lookup_sensor(cursor, tpms_id: str):
     """
-    Return (car_label, registered_location_id) if sensor is known, else None.
+    Return (car_id, registered_location_id) if sensor is known, else None.
     """
     cursor.execute(
-        "SELECT car_label, location_id FROM idapp_carid WHERE tpms_id = %s",
+        "SELECT car_id, location FROM idapp_carid WHERE tpms_id = %s",
         (tpms_id,)
     )
     return cursor.fetchone()
