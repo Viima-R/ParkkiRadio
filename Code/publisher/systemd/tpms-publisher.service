@@ -1,0 +1,16 @@
+[Unit]
+Description=TPMS Publisher - rtl_433 to MQTT
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/tpms_publisher/venv/bin/python3 /opt/tpms_publisher/tpms_publisher.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=tpms-publisher
+
+[Install]
+WantedBy=multi-user.target
