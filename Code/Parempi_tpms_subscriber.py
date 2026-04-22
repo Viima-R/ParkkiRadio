@@ -5,25 +5,21 @@ TPMS Subscriber
 Listens to MQTT topic for TPMS sensor messages published by tpms_publisher.py.
 For each message it:
 
-  1. Ensures the location exists in idapp_location.
-  2. Looks up the sensor ID in idapp_carid to find car_label and known status.
+  1. Validates that the location_id exists in idapp_location.
+  2. Looks up the sensor ID in idapp_carid to determine if the car is known.
   3. Upserts a row in idapp_timer:
-       - New car  -> insert with first_seen = last_seen = now, is_known = False/True
-       - Returning sensor from same session -> update last_seen only
-  4. If sensor is in idapp_carid (known/authorized):
-       - Sets is_known = TRUE on the timer row.
-       - If the known car's registered location differs from the current location,
-         logs a warning (cross-location detection — handled downstream by Django).
+       - New car  -> insert with timestamp = now(), overtime = false
+       - Returning car -> update timestamp and location_id
+  4. If the car is known (found in idapp_carid) but seen at a different
+     location than registered, logs a warning for operator attention.
 
-Config is read from /opt/tpms_subscriber/config.env
+Config: /opt/tpms_subscriber/config.env
 """
 
 import json
-import os
 import sys
 import time
 import psycopg2
-import psycopg2.extras
 import paho.mqtt.client as mqtt
 
 # ---------------------------------------------------------------------------
@@ -77,7 +73,6 @@ def get_conn():
     return _conn
 
 def ensure_db():
-    """Block until DB is reachable."""
     while True:
         try:
             get_conn()
@@ -89,43 +84,44 @@ def ensure_db():
 # ---------------------------------------------------------------------------
 # Core logic
 # ---------------------------------------------------------------------------
-def ensure_location(cursor, location_id: str):
-    """Insert location if it does not exist yet."""
+def validate_location(cursor, location_id: int) -> bool:
+    """Return True if locationID exists in idapp_location."""
     cursor.execute(
-        """
-        INSERT INTO idapp_location (location_id)
-        VALUES (%s)
-        ON CONFLICT (location_id) DO NOTHING
-        """,
+        'SELECT 1 FROM idapp_location WHERE "locationID" = %s',
         (location_id,)
     )
+    return cursor.fetchone() is not None
 
-def lookup_sensor(cursor, tpms_id: str):
+def lookup_car(cursor, tpms_id: str):
     """
-    Return (car_id, registered_location_id) if sensor is known, else None.
+    Look up tpms_id in idapp_carid.
+    Returns (car_id, location) if found, else None.
+    car_id is the registered identifier for this sensor.
+    location is the varchar description of its registered location (may be None).
     """
     cursor.execute(
-        "SELECT car_id, location FROM idapp_carid WHERE tpms_id = %s",
+        "SELECT car_id, location FROM idapp_carid WHERE car_id = %s",
         (tpms_id,)
     )
     return cursor.fetchone()
 
-def upsert_timer(cursor, car_label: str, location_id: str, is_known: bool):
+def upsert_timer(cursor, car_id: str, location_id: int):
     """
     Upsert idapp_timer:
-      - New car: full insert
-      - Existing car: update last_seen (and is_known if it became known)
+      - New car: insert with timestamp = now(), overtime = false
+      - Existing car: update timestamp and location_id
+    car_id is truncated to 15 chars to match the column type.
     """
+    car_id = car_id[:15]
     cursor.execute(
         """
-        INSERT INTO idapp_timer (car_label, location_id, first_seen, last_seen, is_known, overtime)
-        VALUES (%s, %s, NOW(), NOW(), %s, FALSE)
-        ON CONFLICT (car_label) DO UPDATE SET
-            last_seen   = NOW(),
-            location_id = EXCLUDED.location_id,
-            is_known    = idapp_timer.is_known OR EXCLUDED.is_known
+        INSERT INTO idapp_timer ("carID", timestamp, overtime, location_id)
+        VALUES (%s, NOW(), FALSE, %s)
+        ON CONFLICT ("carID") DO UPDATE SET
+            timestamp   = NOW(),
+            location_id = EXCLUDED.location_id
         """,
-        (car_label, location_id, is_known)
+        (car_id, location_id)
     )
 
 def process_message(payload: dict):
@@ -133,44 +129,55 @@ def process_message(payload: dict):
     tpms_id     = payload.get("tpms_id")
     location_id = payload.get("location_id")
 
-    if not tpms_id or not location_id:
+    if not tpms_id or location_id is None:
         print(f"[SUB] Skipping incomplete message: {payload}", file=sys.stderr)
+        return
+
+    # location_id must be an integer (bigint FK to idapp_location)
+    try:
+        location_id = int(location_id)
+    except (ValueError, TypeError):
+        print(f"[SUB] Invalid location_id '{location_id}' — must be integer", file=sys.stderr)
         return
 
     conn = get_conn()
     try:
         with conn.cursor() as cur:
-            # 1. Ensure location row exists
-            ensure_location(cur, location_id)
 
-            # 2. Check if sensor is registered
-            known_row = lookup_sensor(cur, tpms_id)
+            # 1. Validate location exists
+            if not validate_location(cur, location_id):
+                print(
+                    f"[SUB] location_id {location_id} not found in idapp_location "
+                    f"— skipping sensor {tpms_id}",
+                    file=sys.stderr
+                )
+                return
+
+            # 2. Check if car is known in idapp_carid
+            known_row = lookup_car(cur, tpms_id)
 
             if known_row:
-                car_label, registered_location = known_row
-                is_known = True
-                if registered_location and registered_location != location_id:
+                car_id, registered_location = known_row
+                status = "known"
+                if registered_location:
                     print(
-                        f"[WARN] Known car '{car_label}' seen at location "
-                        f"'{location_id}' but registered at '{registered_location}'"
+                        f"[SUB] Known car '{car_id}' registered at "
+                        f"'{registered_location}' — seen at location_id {location_id}"
                     )
             else:
-                # Unknown sensor — use the tpms_id itself as a temporary car_label
-                # so it gets tracked. An operator can later promote it in idapp_carid.
-                car_label = tpms_id
-                is_known  = False
+                # Unknown sensor — use tpms_id as the car_id in idapp_timer
+                car_id = tpms_id
+                status = "unknown"
 
-            # 3. Upsert timer
-            upsert_timer(cur, car_label, location_id, is_known)
+            # 3. Upsert idapp_timer
+            upsert_timer(cur, car_id, location_id)
 
         conn.commit()
-        status = "known" if is_known else "unknown"
-        print(f"[SUB] sensor={tpms_id}  car={car_label}  loc={location_id}  [{status}]")
+        print(f"[SUB] sensor={tpms_id}  car={car_id}  loc={location_id}  [{status}]")
 
     except Exception as e:
         print(f"[DB] Error processing message: {e}", file=sys.stderr)
         conn.rollback()
-        # Force reconnect on next message
         global _conn
         _conn = None
 
