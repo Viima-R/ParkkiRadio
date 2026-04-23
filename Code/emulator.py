@@ -2,9 +2,13 @@ import random
 import time
 import threading
 import paho.mqtt.client as mqtt
+import json
+
+# Location name where IDs are being sent from
+LOCATION = "testaamo"
 
 # MQTT config
-BROKER = "localhost"
+BROKER = "86.50.22.104"
 PORT = 1883
 TOPIC = "tpms/ids"
 
@@ -38,9 +42,13 @@ lock = threading.Lock()
 
 # SEND MESSAGE
 
-def send_once(sensor_id, label):
-    client.publish(TOPIC, sensor_id)
-    print(f"{label}: {sensor_id}")
+def send_once(sensor_id):
+    payload = json.dumps({
+        "id": sensor_id,
+        "location": LOCATION
+    })
+    client.publish(TOPIC, payload)
+    print(payload)
 
 
 # CAR SIMULATION
@@ -60,14 +68,14 @@ def simulate_car():
 
     # ENTRY → one sensor, one message
     entry_sensor = random.choice(sensors)
-    send_once(entry_sensor, "ENTRY")
+    send_once(entry_sensor)
 
     # Parked → no messages
     time.sleep(random.uniform(*PARK_TIME))
 
     # EXIT → one sensor, one message
     exit_sensor = random.choice(sensors)
-    send_once(exit_sensor, "EXIT")
+    send_once(exit_sensor)
 
     print(f"Car DEPARTS: {sensors}\n")
 
