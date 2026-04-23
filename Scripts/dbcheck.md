@@ -23,9 +23,9 @@ WHERE t.location_id = l.\"locationID\"
 We opened crontab with "crontab -e" and added the following line.
 
 ```
-* * * * * /home/ubuntu/check_db.sh >> /home/ubuntu/cron.log 2>&1
+* * * * * /home/ubuntu/check_db.sh >> /home/ubuntu/cron.log 2>&1; sleep 30; /home/ubuntu/check_db.sh >> /home/ubuntu/cron.log 2>&1
 ```
 
-Now it runs the script we created every minute and generates logs.
+Now it runs the script we created every 30s and generates logs.
 
 You can turn it on and off with systemctl on cron.
