@@ -36,10 +36,10 @@ def load_config(path):
 
 cfg = load_config(CONFIG_FILE)
 
-MQTT_BROKER  = cfg.get("MQTT_BROKER", "localhost")
-MQTT_PORT    = int(cfg.get("MQTT_PORT", 1883))
-MQTT_TOPIC   = cfg.get("MQTT_TOPIC", "tpms/data")
-LOCATION_ID  = cfg.get("LOCATION_ID", "1")
+MQTT_BROKER  = cfg.get("MQTT_BROKER")
+MQTT_PORT    = int(cfg.get("MQTT_PORT"))
+MQTT_TOPIC   = cfg.get("MQTT_TOPIC")
+LOCATION_ID  = cfg.get("LOCATION_ID")
 
 # ---------------------------------------------------------------------------
 # MQTT setup
@@ -109,14 +109,6 @@ def process_line(line: str):
         "tpms_id"    : str(data["id"]),
         "location_id": LOCATION_ID,
     }
-    if "pressure_kPa" in data:
-        payload["pressure_kPa"] = data["pressure_kPa"]
-    if "temperature_C" in data:
-        payload["temperature_C"] = data["temperature_C"]
-    if "flags" in data:
-        payload["flags"] = data["flags"]
-    if "time" in data:
-        payload["sensor_time"] = data["time"]
 
     msg = json.dumps(payload)
     result = mqtt_client.publish(MQTT_TOPIC, msg)
