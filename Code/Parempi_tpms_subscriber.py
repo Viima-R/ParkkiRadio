@@ -7,11 +7,10 @@ For each message it:
 
   1. Validates that the location_id exists in idapp_location.
   2. Looks up the sensor ID in idapp_carid to determine if the car is known.
-  3. Upserts a row in idapp_timer:
-       - New car  -> insert with timestamp = now(), overtime = false
-       - Returning car -> update timestamp and location_id
-  4. If the car is known (found in idapp_carid) but seen at a different
-     location than registered, logs a warning for operator attention.
+  3. Known car  -> upsert idapp_timer on every signal (permit holders stay tracked)
+     Unknown car -> first signal = arriving, insert into idapp_timer
+                    second signal = leaving, delete from idapp_timer
+  4. If a known car is seen at a different location than registered, logs a warning.
 
 Config: /opt/tpms_subscriber/config.env
 """
@@ -105,12 +104,11 @@ def lookup_car(cursor, tpms_id: str):
     )
     return cursor.fetchone()
 
-def upsert_timer(cursor, car_id: str, location_id: int):
+def upsert_known_timer(cursor, car_id: str, location_id: int):
     """
-    Upsert idapp_timer:
-      - New car: insert with timestamp = now(), overtime = false
-      - Existing car: update timestamp and location_id
-    car_id is truncated to 15 chars to match the column type.
+    Known car: insert or update timestamp and location on every signal.
+    Permit holders stay in idapp_timer as long as they are present.
+    car_id truncated to 15 chars to match column type.
     """
     car_id = car_id[:15]
     cursor.execute(
@@ -123,6 +121,41 @@ def upsert_timer(cursor, car_id: str, location_id: int):
         """,
         (car_id, location_id)
     )
+
+def handle_unknown_timer(cursor, car_id: str, location_id: int) -> str:
+    """
+    Unknown car departure logic:
+      - First signal  -> car is arriving, insert into idapp_timer.
+      - Second signal -> car is leaving, delete from idapp_timer.
+    Returns 'arrived' or 'departed' for logging.
+    car_id truncated to 15 chars to match column type.
+    """
+    car_id = car_id[:15]
+
+    # Check if already present in idapp_timer
+    cursor.execute(
+        'SELECT 1 FROM idapp_timer WHERE "carID" = %s',
+        (car_id,)
+    )
+    already_present = cursor.fetchone() is not None
+
+    if already_present:
+        # Second sighting — car is leaving, remove it
+        cursor.execute(
+            'DELETE FROM idapp_timer WHERE "carID" = %s',
+            (car_id,)
+        )
+        return "departed"
+    else:
+        # First sighting — car is arriving, record it
+        cursor.execute(
+            """
+            INSERT INTO idapp_timer ("carID", timestamp, overtime, location_id)
+            VALUES (%s, NOW(), FALSE, %s)
+            """,
+            (car_id, location_id)
+        )
+        return "arrived"
 
 def process_message(payload: dict):
     """Handle one decoded MQTT message."""
@@ -169,11 +202,15 @@ def process_message(payload: dict):
                 car_id = tpms_id
                 status = "unknown"
 
-            # 3. Upsert idapp_timer
-            upsert_timer(cur, car_id, location_id)
+            # 3. Write to idapp_timer based on known/unknown status
+            if known_row:
+                upsert_known_timer(cur, car_id, location_id)
+                event = "seen"
+            else:
+                event = handle_unknown_timer(cur, car_id, location_id)
 
         conn.commit()
-        print(f"[SUB] sensor={tpms_id}  car={car_id}  loc={location_id}  [{status}]")
+        print(f"[SUB] sensor={tpms_id}  car={car_id}  loc={location_id}  [{status}] [{event}]")
 
     except Exception as e:
         print(f"[DB] Error processing message: {e}", file=sys.stderr)
