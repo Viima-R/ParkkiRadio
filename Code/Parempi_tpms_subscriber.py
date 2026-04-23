@@ -42,9 +42,9 @@ def load_config(path):
 
 cfg = load_config(CONFIG_FILE)
 
-MQTT_BROKER = cfg.get("MQTT_BROKER", "localhost")
+MQTT_BROKER = cfg.get("MQTT_BROKER")
 MQTT_PORT   = int(cfg.get("MQTT_PORT", 1883))
-MQTT_TOPIC  = cfg.get("MQTT_TOPIC", "tpms/data")
+MQTT_TOPIC  = cfg.get("MQTT_TOPIC")
 
 DB_HOST     = cfg.get("DB_HOST", "localhost")
 DB_PORT     = int(cfg.get("DB_PORT", 5432))
@@ -77,7 +77,7 @@ def ensure_db():
             get_conn()
             return
         except psycopg2.OperationalError as e:
-            print(f"[DB] Not available: {e} — retrying in 5s", file=sys.stderr)
+            print(f"[DB] Not available: {e} \u2014 retrying in 5s", file=sys.stderr)
             time.sleep(5)
 
 # ---------------------------------------------------------------------------
@@ -140,14 +140,14 @@ def handle_unknown_timer(cursor, car_id: str, location_id: int) -> str:
     already_present = cursor.fetchone() is not None
 
     if already_present:
-        # Second sighting — car is leaving, remove it
+        # Second sighting \u2014 car is leaving, remove it
         cursor.execute(
             'DELETE FROM idapp_timer WHERE "carID" = %s',
             (car_id,)
         )
         return "departed"
     else:
-        # First sighting — car is arriving, record it
+        # First sighting \u2014 car is arriving, record it
         cursor.execute(
             """
             INSERT INTO idapp_timer ("carID", timestamp, overtime, location_id)
@@ -170,7 +170,7 @@ def process_message(payload: dict):
     try:
         location_id = int(location_id)
     except (ValueError, TypeError):
-        print(f"[SUB] Invalid location_id '{location_id}' — must be integer", file=sys.stderr)
+        print(f"[SUB] Invalid location_id '{location_id}' \u2014 must be integer", file=sys.stderr)
         return
 
     conn = get_conn()
@@ -181,7 +181,7 @@ def process_message(payload: dict):
             if not validate_location(cur, location_id):
                 print(
                     f"[SUB] location_id {location_id} not found in idapp_location "
-                    f"— skipping sensor {tpms_id}",
+                    f"\u2014 skipping sensor {tpms_id}",
                     file=sys.stderr
                 )
                 return
@@ -195,10 +195,10 @@ def process_message(payload: dict):
                 if registered_location:
                     print(
                         f"[SUB] Known car '{car_id}' registered at "
-                        f"'{registered_location}' — seen at location_id {location_id}"
+                        f"'{registered_location}' \u2014 seen at location_id {location_id}"
                     )
             else:
-                # Unknown sensor — use tpms_id as the car_id in idapp_timer
+                # Unknown sensor \u2014 use tpms_id as the car_id in idapp_timer
                 car_id = tpms_id
                 status = "unknown"
 
@@ -229,7 +229,7 @@ def on_connect(client, userdata, flags, rc):
         print(f"[MQTT] Connection failed rc={rc}", file=sys.stderr)
 
 def on_disconnect(client, userdata, rc):
-    print(f"[MQTT] Disconnected rc={rc} — will auto-reconnect", file=sys.stderr)
+    print(f"[MQTT] Disconnected rc={rc} \u2014 will auto-reconnect", file=sys.stderr)
 
 def on_message(client, userdata, msg):
     try:
@@ -255,10 +255,11 @@ def main():
             client.connect(MQTT_BROKER, MQTT_PORT, keepalive=60)
             break
         except Exception as e:
-            print(f"[MQTT] Cannot connect: {e} — retrying in 5s", file=sys.stderr)
+            print(f"[MQTT] Cannot connect: {e} \u2014 retrying in 5s", file=sys.stderr)
             time.sleep(5)
 
     client.loop_forever()
 
 if __name__ == "__main__":
     main()
+
