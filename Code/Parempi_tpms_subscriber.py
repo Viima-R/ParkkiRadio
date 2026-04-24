@@ -227,6 +227,7 @@ def main():
         client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
 
     client.tls_set()
+    client.tls_insecure_set(True)
     client.on_connect = on_connect
     client.on_message = on_message
 
