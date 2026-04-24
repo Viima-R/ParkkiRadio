@@ -200,18 +200,26 @@ def process_message(payload: dict):
 # MQTT
 # ---------------------------------------------------------------------------
 def on_connect(client, userdata, flags, rc):
+    print("[MQTT] CONNECT rc =", rc)
+
     if rc == 0:
-        print(f"[MQTT] Connected to {MQTT_BROKER}")
-        client.subscribe(MQTT_TOPIC)
+        result = client.subscribe(MQTT_TOPIC)
+        print("[MQTT] SUBSCRIBE RESULT =", result)
     else:
-        print(f"[MQTT] Failed rc={rc}", file=sys.stderr)
+        print("[MQTT] CONNECT FAILED", file=sys.stderr)
+
+
+def on_subscribe(client, userdata, mid, granted_qos):
+    print("[MQTT] SUBSCRIBED mid=", mid, "qos=", granted_qos)
+
 
 def on_message(client, userdata, msg):
+    print("[MQTT] MESSAGE RECEIVED:", msg.topic, msg.payload.decode())
     try:
         payload = json.loads(msg.payload.decode())
         process_message(payload)
-    except json.JSONDecodeError as e:
-        print(f"[MQTT] Bad JSON: {e}", file=sys.stderr)
+    except Exception as e:
+        print("[MQTT] Processing error:", e)
 
 # ---------------------------------------------------------------------------
 # MAIN

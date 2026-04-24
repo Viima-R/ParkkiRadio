@@ -5,12 +5,12 @@ import paho.mqtt.client as mqtt
 import json
 
 # Location name where IDs are being sent from
-LOCATION = "Demo"
+LOCATION = "demo"
 
 # MQTT config
 BROKER = "parkkiradio.duckdns.org"
 PORT = 8883
-TOPIC = "tpms/ids"
+TOPIC = "tpms/data"
 USER = ""
 PASSWORD = ""
 
