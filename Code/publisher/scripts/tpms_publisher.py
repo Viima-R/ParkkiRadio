@@ -36,10 +36,10 @@ def load_config(path):
 
 cfg = load_config(CONFIG_FILE)
 
-MQTT_BROKER  = cfg.get("MQTT_BROKER", "localhost")
-MQTT_PORT    = int(cfg.get("MQTT_PORT", 1883))
-MQTT_TOPIC   = cfg.get("MQTT_TOPIC", "tpms/data")
-LOCATION_ID  = cfg.get("LOCATION_ID", "1")
+MQTT_BROKER  = cfg.get("MQTT_BROKER")
+MQTT_PORT    = int(cfg.get("MQTT_PORT"))
+MQTT_TOPIC   = cfg.get("MQTT_TOPIC")
+LOCATION  = cfg.get("LOCATION")
 
 # ---------------------------------------------------------------------------
 # MQTT setup
@@ -69,9 +69,6 @@ def connect_mqtt():
 RTL_433_CMD = [
     "rtl_433",
     "-F", "json",       # JSON output
-    "-R", "0",          # disable all default decoders
-    "-R", "59",         # enable TPMS decoder (protocol 59 = generic TPMS)
-    "-M", "time:iso",   # ISO timestamps
 ]
 
 def start_rtl433():
@@ -100,23 +97,18 @@ def process_line(line: str):
     except json.JSONDecodeError:
         return
 
+    if data.get("type") != "TPMS":
+        return
+    
     # Must have a sensor id to be useful
     if not REQUIRED_FIELDS.issubset(data.keys()):
         return
 
     # Build the payload — include what is present, skip what is not
     payload = {
-        "tpms_id"    : str(data["id"]),
-        "location_id": LOCATION_ID,
+        "id"    : str(data["id"]),
+        "location": LOCATION,
     }
-    if "pressure_kPa" in data:
-        payload["pressure_kPa"] = data["pressure_kPa"]
-    if "temperature_C" in data:
-        payload["temperature_C"] = data["temperature_C"]
-    if "flags" in data:
-        payload["flags"] = data["flags"]
-    if "time" in data:
-        payload["sensor_time"] = data["time"]
 
     msg = json.dumps(payload)
     result = mqtt_client.publish(MQTT_TOPIC, msg)
