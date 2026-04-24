@@ -58,7 +58,7 @@ mqtt_client.on_connect = on_connect
 def connect_mqtt():
     while True:
         try:
-            mqtt_client.connect(MQTT_BROKER, MQTT_PORT, keepalive=60)
+            mqtt_client.connect(MQTT_BROKER, MQTT_PORT, MQTT_USER, MQTT_PASSWORD, keepalive=60)
             mqtt_client.loop_start()
             return
         except Exception as e:
