@@ -17,7 +17,7 @@ echo ""
 # --- Collect configuration interactively ---
 read -p "MQTT Broker IP address        : " MQTT_BROKER
 read -p "MQTT Port              [8883] : " MQTT_PORT
-MQTT_PORT=${MQTT_PORT:-1883}
+MQTT_PORT=${MQTT_PORT:-8883}
 read -p "MQTT Topic        [tpms/data] : " MQTT_TOPIC
 MQTT_TOPIC=${MQTT_TOPIC:-tpms/data}
 read -p "Location (this device's location): " LOCATION
