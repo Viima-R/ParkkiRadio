@@ -226,7 +226,7 @@ def main():
 
     while True:
         try:
-            client.connect(MQTT_BROKER, MQTT_PORT, 60)
+            client.connect(MQTT_BROKER, MQTT_PORT, MQTT_USER, MQTT_PASSWORD, 60)
             break
         except Exception as e:
             print(f"[MQTT] Retry connect: {e}", file=sys.stderr)
