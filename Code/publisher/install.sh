@@ -21,6 +21,8 @@ MQTT_PORT=${MQTT_PORT:-1883}
 read -p "MQTT Topic        [tpms/data] : " MQTT_TOPIC
 MQTT_TOPIC=${MQTT_TOPIC:-tpms/data}
 read -p "Location (this device's location): " LOCATION
+read -p "MQTT User                     : " MQTT_USER
+read -p "MQTT Password                 : " MQTT_PASSWORD
 
 echo ""
 echo "--- Configuration summary ---"
@@ -28,6 +30,8 @@ echo "  MQTT Broker  : $MQTT_BROKER"
 echo "  MQTT Port    : $MQTT_PORT"
 echo "  MQTT Topic   : $MQTT_TOPIC"
 echo "  Location  : $LOCATION"
+echo "  MQTT User    : $MQTT_USER"
+echo "  MQTT Password : *********"
 echo ""
 read -p "Proceed with installation? [y/N] " CONFIRM
 if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
