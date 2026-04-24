@@ -16,18 +16,18 @@ echo ""
 
 # --- Collect configuration interactively ---
 read -p "MQTT Broker IP address        : " MQTT_BROKER
-read -p "MQTT Port              [1883] : " MQTT_PORT
+read -p "MQTT Port              [8883] : " MQTT_PORT
 MQTT_PORT=${MQTT_PORT:-1883}
 read -p "MQTT Topic        [tpms/data] : " MQTT_TOPIC
 MQTT_TOPIC=${MQTT_TOPIC:-tpms/data}
-read -p "Location ID (this device's ID): " LOCATION_ID
+read -p "Location (this device's location): " LOCATION
 
 echo ""
 echo "--- Configuration summary ---"
 echo "  MQTT Broker  : $MQTT_BROKER"
 echo "  MQTT Port    : $MQTT_PORT"
 echo "  MQTT Topic   : $MQTT_TOPIC"
-echo "  Location ID  : $LOCATION_ID"
+echo "  Location  : $LOCATION"
 echo ""
 read -p "Proceed with installation? [y/N] " CONFIRM
 if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
@@ -71,7 +71,7 @@ cat > /opt/tpms_publisher/config.env <<EOF
 MQTT_BROKER=$MQTT_BROKER
 MQTT_PORT=$MQTT_PORT
 MQTT_TOPIC=$MQTT_TOPIC
-LOCATION_ID=$LOCATION_ID
+LOCATION=$LOCATION
 EOF
 chmod 600 /opt/tpms_publisher/config.env
 
