@@ -9,8 +9,10 @@ LOCATION = "testaamo"
 
 # MQTT config
 BROKER = "86.50.22.104"
-PORT = 1883
+PORT = 8883
 TOPIC = "tpms/ids"
+USER = ""
+PASSWORD = ""
 
 client = mqtt.Client()
 client.connect(BROKER, PORT, 60)
