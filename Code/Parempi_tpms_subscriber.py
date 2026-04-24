@@ -35,6 +35,8 @@ cfg = load_config(CONFIG_FILE)
 MQTT_BROKER = cfg.get("MQTT_BROKER")
 MQTT_PORT   = int(cfg.get("MQTT_PORT"))
 MQTT_TOPIC  = cfg.get("MQTT_TOPIC")
+MQTT_USER   = cfg.get("MQTT_USER")
+MQTT_PASSWORD = cfg.get("MQTT_PASSWORD")
 
 DB_HOST     = cfg.get("DB_HOST", "localhost")
 DB_PORT     = int(cfg.get("DB_PORT", 5432))
