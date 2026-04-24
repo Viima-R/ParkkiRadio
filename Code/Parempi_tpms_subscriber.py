@@ -226,6 +226,7 @@ def main():
     if MQTT_USER and MQTT_PASSWORD:
         client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
 
+    client.tls_set()
     client.on_connect = on_connect
     client.on_message = on_message
 
@@ -238,3 +239,6 @@ def main():
             time.sleep(5)
 
     client.loop_forever()
+
+if __name__ == "__main__":
+    main()

@@ -57,6 +57,8 @@ mqtt_client = mqtt.Client()
 if MQTT_USER and MQTT_PASSWORD:
         mqtt_client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
 
+mqtt_client.tls_set()
+
 mqtt_client.on_connect = on_connect
 
 def connect_mqtt():
