@@ -5,10 +5,10 @@ import paho.mqtt.client as mqtt
 import json
 
 # Location name where IDs are being sent from
-LOCATION = "testaamo"
+LOCATION = "Demo"
 
 # MQTT config
-BROKER = "86.50.22.104"
+BROKER = "parkkiradio.duckdns.org"
 PORT = 8883
 TOPIC = "tpms/ids"
 USER = ""
@@ -18,6 +18,7 @@ client = mqtt.Client()
 client.username_pw_set(USER, PASSWORD)
 client.tls_set()
 client.connect(BROKER, PORT, 60)
+client.loop_start()
 
 
 # PREDEFINED CAR POOL
@@ -51,7 +52,8 @@ def send_once(sensor_id):
         "id": sensor_id,
         "location": LOCATION
     })
-    client.publish(TOPIC, payload)
+    result = client.publish(TOPIC, payload)
+    print("publish rc =", result.rc)
     print(payload)
 
 
