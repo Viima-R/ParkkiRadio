@@ -15,6 +15,7 @@ USER = ""
 PASSWORD = ""
 
 client = mqtt.Client()
+client.username_pw_set(USER, PASSWORD)
 client.connect(BROKER, PORT, 60)
 
 

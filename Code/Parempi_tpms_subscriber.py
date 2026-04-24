@@ -221,18 +221,20 @@ def main():
     ensure_db()
 
     client = mqtt.Client()
+
+    # AUTH (FIX)
+    if MQTT_USER and MQTT_PASSWORD:
+        client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
+
     client.on_connect = on_connect
     client.on_message = on_message
 
     while True:
         try:
-            client.connect(MQTT_BROKER, MQTT_PORT, MQTT_USER, MQTT_PASSWORD, 60)
+            client.connect(MQTT_BROKER, MQTT_PORT, 60)
             break
         except Exception as e:
             print(f"[MQTT] Retry connect: {e}", file=sys.stderr)
             time.sleep(5)
 
     client.loop_forever()
-
-if __name__ == "__main__":
-    main()
