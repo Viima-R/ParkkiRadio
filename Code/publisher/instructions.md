@@ -1,7 +1,5 @@
 # Instructions for Mosquitto Publisher
 
-## 1.
-
 - Download the publisher folder
 
 - Run install.sh
