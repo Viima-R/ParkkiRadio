@@ -39,6 +39,8 @@ cfg = load_config(CONFIG_FILE)
 MQTT_BROKER  = cfg.get("MQTT_BROKER")
 MQTT_PORT    = int(cfg.get("MQTT_PORT"))
 MQTT_TOPIC   = cfg.get("MQTT_TOPIC")
+MQTT_USER    = cfg.get("MQTT_USER")
+MQTT_PASSWORD = cfg.get("MQTT_PASSWORD")
 LOCATION  = cfg.get("LOCATION")
 
 # ---------------------------------------------------------------------------
@@ -51,6 +53,12 @@ def on_connect(client, userdata, flags, rc):
         print(f"[MQTT] Connection failed, rc={rc}", file=sys.stderr)
 
 mqtt_client = mqtt.Client()
+
+if MQTT_USER and MQTT_PASSWORD:
+        mqtt_client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
+
+mqtt_client.tls_set()
+
 mqtt_client.on_connect = on_connect
 
 def connect_mqtt():
