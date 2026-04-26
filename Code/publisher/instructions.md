@@ -12,3 +12,5 @@ Then it will install all the necessary programs needed to run RTL-433 and Mosqui
 - Now you are ready with everything and can just put the publisher running:  
 command line: **source /opt/tpms_publisher/venv/bin/activate**  
 from publisher/scripts/: **python3 tpms_publisher.py**
+
+- Remember to put the tpms_subscriber on in the wanted database server.
