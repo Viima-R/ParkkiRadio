@@ -10,5 +10,5 @@
 Then it will install all the necessary programs needed to run RTL-433 and Mosquitto.
 
 - Now you are ready with everything and can just put the publisher running:  
-**source /opt/tpms_publisher/venv/bin/activate**  
-**python3 tpms_publisher.py**
+command line: **source /opt/tpms_publisher/venv/bin/activate**  
+from publisher/scripts/: **python3 tpms_publisher.py**
