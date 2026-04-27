@@ -8,6 +8,7 @@ Listens to MQTT topic for TPMS sensor messages published by tpms_publisher.py.
 import json
 import sys
 import time
+from datetime import timedelta
 import psycopg2
 import paho.mqtt.client as mqtt
 
@@ -44,6 +45,9 @@ DB_NAME     = cfg.get("DB_NAME", "parkkiradio")
 DB_USER     = cfg.get("DB_USER", "tpms_user")
 DB_PASSWORD = cfg.get("DB_PASSWORD", "")
 
+# Debounce window (seconds)
+PASS_WINDOW_SECONDS = 10
+
 # ---------------------------------------------------------------------------
 # DB connection
 # ---------------------------------------------------------------------------
@@ -73,7 +77,13 @@ def ensure_db():
             time.sleep(5)
 
 # ---------------------------------------------------------------------------
-# Location lookup (FIX)
+# ID normalization (NEW)
+# ---------------------------------------------------------------------------
+def normalize_car_id(tpms_id: str) -> str:
+    return tpms_id[:4]
+
+# ---------------------------------------------------------------------------
+# Location lookup
 # ---------------------------------------------------------------------------
 def get_location_id(cursor, location_name: str):
     cursor.execute(
@@ -86,13 +96,6 @@ def get_location_id(cursor, location_name: str):
 # ---------------------------------------------------------------------------
 # Existing DB logic
 # ---------------------------------------------------------------------------
-def validate_location(cursor, location_id: int) -> bool:
-    cursor.execute(
-        'SELECT 1 FROM idapp_location WHERE "locationID" = %s',
-        (location_id,)
-    )
-    return cursor.fetchone() is not None
-
 def lookup_car(cursor, tpms_id: str):
     cursor.execute(
         "SELECT car_id, location FROM idapp_carid WHERE car_id = %s",
@@ -113,22 +116,39 @@ def upsert_known_timer(cursor, car_id: str, location_id: int):
         (car_id, location_id)
     )
 
+# ---------------------------------------------------------------------------
+# UNKNOWN CAR LOGIC (UPDATED WITH DEBOUNCE)
+# ---------------------------------------------------------------------------
 def handle_unknown_timer(cursor, car_id: str, location_id: int) -> str:
-    car_id = car_id[:15]
+    car_id = car_id[:4]
 
+    # Get last timestamp
     cursor.execute(
-        'SELECT 1 FROM idapp_timer WHERE "carID" = %s',
+        'SELECT timestamp FROM idapp_timer WHERE "carID" = %s',
         (car_id,)
     )
-    already_present = cursor.fetchone() is not None
+    row = cursor.fetchone()
 
-    if already_present:
+    # Use DB time to avoid timezone issues
+    cursor.execute("SELECT NOW()")
+    now = cursor.fetchone()[0]
+
+    if row:
+        last_seen = row[0]
+
+        # ⛔ Debounce: ignore if within pass window
+        if now - last_seen < timedelta(seconds=PASS_WINDOW_SECONDS):
+            return "ignored"
+
+        # Otherwise → departure
         cursor.execute(
             'DELETE FROM idapp_timer WHERE "carID" = %s',
             (car_id,)
         )
         return "departed"
+
     else:
+        # First detection → arrival
         cursor.execute(
             """
             INSERT INTO idapp_timer ("carID", timestamp, overtime, location_id)
@@ -139,11 +159,11 @@ def handle_unknown_timer(cursor, car_id: str, location_id: int) -> str:
         return "arrived"
 
 # ---------------------------------------------------------------------------
-# MAIN PROCESSING (FIXED)
+# MAIN PROCESSING
 # ---------------------------------------------------------------------------
 def process_message(payload: dict):
-    tpms_id = payload.get("id")           # FIXED
-    location_name = payload.get("location")  # FIXED
+    tpms_id = payload.get("id")
+    location_name = payload.get("location")
 
     if not tpms_id or not location_name:
         print(f"[SUB] Skipping incomplete message: {payload}", file=sys.stderr)
@@ -154,7 +174,6 @@ def process_message(payload: dict):
     try:
         with conn.cursor() as cur:
 
-            # Convert location name → location_id
             location_id = get_location_id(cur, location_name)
 
             if not location_id:
@@ -164,7 +183,7 @@ def process_message(payload: dict):
                 )
                 return
 
-            # Check known car
+            # Check known car (use full TPMS ID)
             known_row = lookup_car(cur, tpms_id)
 
             if known_row:
@@ -177,7 +196,8 @@ def process_message(payload: dict):
                         f"'{registered_location}' — seen at {location_name}"
                     )
             else:
-                car_id = tpms_id
+                # Normalize unknown car ID (NEW)
+                car_id = normalize_car_id(tpms_id)
                 status = "unknown"
 
             # Write logic
@@ -209,10 +229,6 @@ def on_connect(client, userdata, flags, rc):
         print("[MQTT] CONNECT FAILED", file=sys.stderr)
 
 
-def on_subscribe(client, userdata, mid, granted_qos):
-    print("[MQTT] SUBSCRIBED mid=", mid, "qos=", granted_qos)
-
-
 def on_message(client, userdata, msg):
     print("[MQTT] MESSAGE RECEIVED:", msg.topic, msg.payload.decode())
     try:
@@ -230,12 +246,12 @@ def main():
 
     client = mqtt.Client()
 
-    # AUTH (FIX)
     if MQTT_USER and MQTT_PASSWORD:
         client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
 
     client.tls_set()
     client.tls_insecure_set(True)
+
     client.on_connect = on_connect
     client.on_message = on_message
 
