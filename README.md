@@ -24,6 +24,11 @@ Some workaround we came with moving forward with this design:
 ## Design
 Since we had decided the service we're making can only be advisory we decided to make a dashboard that displays a list of locations and shows if any location might have cars that are parked over the time limit.
 
+<img width="911" height="332" alt="kuva" src="https://github.com/user-attachments/assets/e12a8cb4-9819-4d32-8a48-e306fc67e65c" />
+
+
+<img width="686" height="536" alt="Image" src="https://github.com/user-attachments/assets/6dab4cf1-c725-4522-b441-5b506fa1ec65" />
+
 ### cPouta
 We needed a place to host the dashboard so we landed on the cloud service the Finnish IT Center for Science offers cPouta. In cPouta we created a webserver to host the dashboard and a database server to handle the information being sent from the parking locations.
 
