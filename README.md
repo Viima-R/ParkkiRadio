@@ -30,5 +30,8 @@ We needed a place to host the dashboard so we landed on the cloud service the Fi
 ### SDR in parking locations
 The software-defined radios would be attached to a rasberry pi that would send the IDs it detects via internet to the database server using MQTT protocol. This means there needs to be access to electricity and internet in location.
 
+### MQTT and Mosquitto
+MQTT is lightweigth, reliable and easy to scale in this kind of a project. Mosquitto is fairly easy to set-up and protect from unwanted data.
+
 ### Database server
 We're using PostgreSQL as our database, theres a program in the server that processes the IDs it receives and handles them accordingly.
