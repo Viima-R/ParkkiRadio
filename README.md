@@ -9,7 +9,7 @@ We wanted to learn about the use of software-defined radios(SDR) and after disco
 In our prototype we captured signals from TPMS sensors with [rtl-433](https://github.com/merbanan/rtl_433), we filtered out only the IDs and they got saved into a text file. We had a program that checked this file between set intervals and had functions to handle the IDs differently depending if the ID was known which meant they had an allocated parking spot or a visitor which meant they had limited parking time.
 
 ### Results and conclusions of the prototype
-The program worked as we inteded the challenges came with how TPMS sensors function:
+While program worked as we inteded the challenges came with how TPMS sensors function:
 - TPMS sensors don't transmit constantly, they usually have some time between every transmission so there are times when they pass the detection zone without transmitting.
 - Detecting traffic from outside the parking lot.
 - The detection zone is usually larger than desired, you can catch signals from very far away. This becomes a problem when cars are stationary in the parking lot and still occasionally send transmissions. Even though the transmisson rate is very low on stationary cars we still found that this does happen occasionally, this is a problem because we conclude a car is leaving when we detect it a second time.
