@@ -154,4 +154,10 @@ Check up session with the tutor teacher; realization of the limits of our concep
 
 - Bluetooth-beacons over TMPS
 
+# Week 17
 
+Final push. We managed to connect the pieces and the tube works. Publisher filters the wanted sensors from the RTL-SDR feed, Subscriber automatically adds wanted data into the database, automation towards the webpage works.
+
+# Week 18
+
+Everything is in its place. Preparing presentation.
