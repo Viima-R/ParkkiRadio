@@ -4,15 +4,22 @@ import threading
 import paho.mqtt.client as mqtt
 import json
 
-# Location name where IDs are being sent from
-LOCATION = "demo"
+config = {}
 
-# MQTT config
-BROKER = "parkkiradio.duckdns.org"
-PORT = 8883
-TOPIC = "tpms/data"
-USER = ""
-PASSWORD = ""
+with open("mqtt.cfg", "r") as f:
+    for line in f:
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue  # skip empty lines and comments
+        key, value = line.split("=", 1)
+        config[key.strip()] = value.strip()
+
+BROKER = config.get("broker")
+PORT = int(config.get("port", 8883))
+TOPIC = config.get("topic")
+USER = config.get("username")
+PASSWORD = config.get("password")
+LOCATION = config.get("location")
 
 client = mqtt.Client()
 client.username_pw_set(USER, PASSWORD)
