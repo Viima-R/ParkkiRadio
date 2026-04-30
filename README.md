@@ -8,6 +8,32 @@ We wanted to learn about the use of software-defined radio (SDR), and after disc
 ## End result
 We created a dashboard that displays the situtation in different parking locations. It shows the number of parked cars, how many cars are in violation of the time limit for the parking area and the capability to reset overtime cars in a location.
 
+<img width="911" height="332" alt="kuva" src="https://github.com/user-attachments/assets/e12a8cb4-9819-4d32-8a48-e306fc67e65c" />
+
+## Setting up
+This repository contains code that runs in the remote parking location (publisher) and in the database server (subscriber). HERE is a link to our Django repository which acts as our web framework and is running on our webserver.
+
+### Setting up webserver/MQTT broker with Linux
+First install tools we're.
+```
+sudo apt update
+sudo apt install -y nginx mosquitto mosquitto-clients python3 python3-pip python3-dev python3-venv
+```
+For setting up Django you can find a guide we wrote [HERE](https://github.com/Viima-R/ParkkiRadio/blob/main/Documentation/Django/django_notes.md)
+
+WRITE INSTRUCTION TO SETUP BROKER
+
+WRITE INSTRUCTION TO SETUP SSL/TSL CERTIFICATE AND SETUP AUTHORIZATION FOR MQTT
+
+If you want to use authentication for login to the website/MQTT messaging
+
+### Setting up publisher
+Guide and script for setting up the publisher machine [HERE](https://github.com/Viima-R/ParkkiRadio/tree/main/Code/publisher)
+
+### Setting up database server
+
+WRITE INSTRUCTION FOR DB SERVER SETUP
+
 ## Prototype
 In our prototype we captured signals from TPMS sensors with [rtl-433](https://github.com/merbanan/rtl_433), we filtered out only the IDs and they got saved into a text file. We had a program that checked this file between set intervals and had functions to handle the IDs differently depending if the ID was known. A known ID meant that the car had an allocated parking spot, and an unknown IDs were visitors who had a limited parking time.
 
@@ -26,9 +52,6 @@ Some workaround we came with moving forward with this design:
 
 ## Design
 Since we had decided the service we're making can only be advisory we decided to make a dashboard that displays a list of locations and shows if any location might need attention from the parking inspector.
-
-<img width="911" height="332" alt="kuva" src="https://github.com/user-attachments/assets/e12a8cb4-9819-4d32-8a48-e306fc67e65c" />
-
 
 <img width="686" height="536" alt="Image" src="https://github.com/user-attachments/assets/6dab4cf1-c725-4522-b441-5b506fa1ec65" />
 
