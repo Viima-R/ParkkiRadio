@@ -10,8 +10,10 @@ We created a dashboard that displays the situtation in different parking locatio
 
 <img width="911" height="332" alt="kuva" src="https://github.com/user-attachments/assets/e12a8cb4-9819-4d32-8a48-e306fc67e65c" />
 
-## Setting up
-This repository contains code that runs in the remote parking location (publisher) and in the database server (subscriber). HERE is a link to our Django repository which acts as our web framework and is running on our webserver.
+## Setting up guide
+This guide is how to setup our project using architechture similiar to ours. If you have questions or feedback you can contact us at: parkkiradio@protonmail.com
+
+HERE is a link to our Django repository which acts as our web framework and is running on our webserver.
 
 ### Setting up webserver/MQTT broker with Linux
 First install following:
