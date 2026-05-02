@@ -62,7 +62,7 @@ sudo ufw allow 5432
 sudo ufw allow 8883
 ```
 
-Download the [mqtt subscriber](https://github.com/Viima-R/ParkkiRadio/blob/main/Code/Parempi_tpms_subscriber.py).
+Download the [mqtt subscriber](https://github.com/Viima-R/ParkkiRadio/blob/main/Code/Parempi_tpms_subscriber.py) or use the following command to download it.
 
 ```
 wget https://raw.githubusercontent.com/Viima-R/ParkkiRadio/refs/heads/main/Code/Parempi_tpms_subscriber.py
