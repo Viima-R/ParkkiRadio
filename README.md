@@ -14,25 +14,56 @@ We created a dashboard that displays the situtation in different parking locatio
 This repository contains code that runs in the remote parking location (publisher) and in the database server (subscriber). HERE is a link to our Django repository which acts as our web framework and is running on our webserver.
 
 ### Setting up webserver/MQTT broker with Linux
-First install tools we're.
+First install following:
 ```
 sudo apt update
 sudo apt install -y nginx mosquitto mosquitto-clients python3 python3-pip python3-dev python3-venv
 ```
 For setting up Django you can find a guide we wrote [HERE](https://github.com/Viima-R/ParkkiRadio/blob/main/Documentation/Django/django_notes.md)
 
-WRITE INSTRUCTION TO SETUP BROKER
+How to setup SSL/TSL [HERE](https://github.com/Viima-R/ParkkiRadio/blob/main/Documentation/Memos/https_mqtts_and_authentication.md).
 
-WRITE INSTRUCTION TO SETUP SSL/TSL CERTIFICATE AND SETUP AUTHORIZATION FOR MQTT
-
-If you want to use authentication for login to the website/MQTT messaging
+you need to do the above setup if you want to use secure authentication for login to the website/MQTT messaging.
 
 ### Setting up publisher
 Guide and script for setting up the publisher machine [HERE](https://github.com/Viima-R/ParkkiRadio/tree/main/Code/publisher)
 
 ### Setting up database server
 
-WRITE INSTRUCTION FOR DB SERVER SETUP
+Install following
+
+```
+sudo apt update
+sudo apt install postgresql
+```
+
+Create your database and configure the database information in the .env file in Django. Django will automatically create tables for you in the database, so you don't have to worry about those. Create a user for the database and add information about the user to the .env file. Also grant table permissions for the user.
+
+```
+sudo -u postgres psql
+CREATE USER myuser WITH PASSWORD 'mypassword';
+GRANT ALL PRIVILEGES ON DATABASE mydb TO myuser;
+CREATE DATABASE mydb OWNER myuser;
+
+\c mydb
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO myuser;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO myuser;
+```
+
+Open the following ports for mqtts and postgres.
+
+```
+sudo ufw allow 5432
+sudo ufw allow 8883
+```
+
+Download the [mqtt subscriber](https://github.com/Viima-R/ParkkiRadio/blob/main/Code/Parempi_tpms_subscriber.py).
+
+```
+wget https://raw.githubusercontent.com/Viima-R/ParkkiRadio/refs/heads/main/Code/Parempi_tpms_subscriber.py
+```
+
+Setting up cronjob to update table for overtime cars [HERE](https://github.com/Viima-R/ParkkiRadio/blob/main/Scripts/dbcheck.md).
 
 ## Prototype
 In our prototype we captured signals from TPMS sensors with [rtl-433](https://github.com/merbanan/rtl_433), we filtered out only the IDs and they got saved into a text file. We had a program that checked this file between set intervals and had functions to handle the IDs differently depending if the ID was known. A known ID meant that the car had an allocated parking spot, and an unknown IDs were visitors who had a limited parking time.
