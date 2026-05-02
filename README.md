@@ -21,14 +21,17 @@ First install following:
 sudo apt update
 sudo apt install -y nginx mosquitto mosquitto-clients python3 python3-pip python3-dev python3-venv
 ```
-For setting up Django you can find a guide we wrote [HERE](https://github.com/Viima-R/ParkkiRadio/blob/main/Documentation/Django/django_notes.md)
+For setting up Django you can find a guide [HERE](https://github.com/Viima-R/ParkkiRadio/blob/main/Documentation/Django/django_notes.md)
 
 How to setup SSL/TSL [HERE](https://github.com/Viima-R/ParkkiRadio/blob/main/Documentation/Memos/https_mqtts_and_authentication.md).
 
 you need to do the above setup if you want to use secure authentication for login to the website/MQTT messaging.
 
 ### Setting up publisher
+
 Guide and script for setting up the publisher machine [HERE](https://github.com/Viima-R/ParkkiRadio/tree/main/Code/publisher)
+
+Note that you need a software defined radio to capture signals.
 
 ### Setting up database server
 
