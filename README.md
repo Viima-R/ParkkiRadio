@@ -39,7 +39,7 @@ Install following
 
 ```
 sudo apt update
-sudo apt install postgresql
+sudo apt install -y postgresql mosquitto mosquitto-clients
 ```
 
 Create your database and configure the database information in the .env file in Django. Django will automatically create tables for you in the database, so you don't have to worry about those. Create a user for the database and add information about the user to the .env file. Also grant table permissions for the user.
