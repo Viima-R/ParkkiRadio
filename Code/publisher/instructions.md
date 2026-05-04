@@ -14,3 +14,5 @@ command line: **source /opt/tpms_publisher/venv/bin/activate**
 from publisher/scripts/: **python3 tpms_publisher.py**
 
 - Remember to put the tpms_subscriber on in the wanted database server.
+
+Note: You might have to do some changes, such as change the owner of some files etc. If the rtl-433 keeps crashing and starting, stop the publisher with sudo systemctl, and then restart it with the python3 command.
